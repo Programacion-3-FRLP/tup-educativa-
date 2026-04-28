@@ -1,0 +1,41 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 200px;
+  background: #eee;
+  padding: 10px;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+}
+
+.bottom-bar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+
+  .layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .bottom-bar {
+    display: flex;
+    justify-content: space-around;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: #ddd;
+    padding: 10px;
+  }
+
+}

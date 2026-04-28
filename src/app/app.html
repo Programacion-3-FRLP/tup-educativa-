@@ -1,7 +1,20 @@
-<div>
-  <nav>
+<div class="layout">
+
+  
+  <nav class="sidebar">
     <button routerLink="/items">Items</button>
     <button routerLink="/configuracion">Configuración</button>
   </nav>
-  <router-outlet></router-outlet>
+
+  
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+
+  
+  <nav class="bottom-bar">
+    <button routerLink="/items">Items</button>
+    <button routerLink="/configuracion">Configuración</button>
+  </nav>
+
 </div>
