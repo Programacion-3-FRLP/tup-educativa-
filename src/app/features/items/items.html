@@ -1,1 +1,26 @@
-<p>items works!</p>
+<h1>Personas</h1>
+
+@if (loading) {
+  <p>Cargando...</p>
+}
+
+@if (!loading) {
+  <ul>
+    @for (item of filteredItems; track item.login.uuid) {
+      <li>
+        {{ item.name.first }} {{ item.name.last }}
+      </li>
+    }
+  </ul>
+}
+
+<input 
+  type="text"
+  placeholder="Buscar..."
+  [(ngModel)]="searchText"
+  (input)="filterItems()"
+/>
+
+<button (click)="sortByName()">
+  Ordenar por nombre
+</button>
