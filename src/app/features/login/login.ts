@@ -9,7 +9,6 @@ import { Router } from '@angular/router';
   styleUrl: './login.css',
 })
 export class Login {
-
   loading = false;
 
   constructor(private router: Router) {}
