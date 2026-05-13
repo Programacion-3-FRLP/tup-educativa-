@@ -4,21 +4,21 @@
 }
 
 .sidebar {
-  width: 200px;
+  width: 12.5rem;
   background: #eee;
-  padding: 10px;
+  padding: 0.625rem;
 }
 
 .content {
   flex: 1;
-  padding: 20px;
+  padding: 1.25rem;
 }
 
 .bottom-bar {
   display: none;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 48rem) {
 
   .layout {
     flex-direction: column;
@@ -35,7 +35,7 @@
     bottom: 0;
     width: 100%;
     background: #ddd;
-    padding: 10px;
+    padding: 0.625rem;
   }
 
 }

@@ -1,20 +1,21 @@
-<div class="layout">
+@if (mostrarLayout()) {
+  <div class="layout">
 
-  
-  <nav class="sidebar">
-    <button routerLink="/items">Items</button>
-    <button routerLink="/configuracion">Configuración</button>
-  </nav>
+    <nav class="sidebar">
+      <button routerLink="/items">Items</button>
+      <button routerLink="/configuracion">Configuración</button>
+    </nav>
 
-  
-  <main class="content">
-    <router-outlet></router-outlet>
-  </main>
+    <main class="content">
+      <router-outlet></router-outlet>
+    </main>
 
-  
-  <nav class="bottom-bar">
-    <button routerLink="/items">Items</button>
-    <button routerLink="/configuracion">Configuración</button>
-  </nav>
+    <nav class="bottom-bar">
+      <button routerLink="/items">Items</button>
+      <button routerLink="/configuracion">Configuración</button>
+    </nav>
 
-</div>
+  </div>
+} @else {
+  <router-outlet></router-outlet>
+}

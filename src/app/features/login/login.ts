@@ -9,13 +9,14 @@ import { Router } from '@angular/router';
   styleUrl: './login.css',
 })
 export class Login {
+
   loading = false;
 
   constructor(private router: Router) {}
 
   login() {
     this.loading = true;
-    
+
     setTimeout(() => {
       sessionStorage.setItem('auth', 'true');
       this.router.navigate(['/items']);
