@@ -17,71 +17,87 @@ export class Items implements OnInit {
 
   items: any[] = [];
   filteredItems: any[] = [];
+
   searchText = '';
   loading = true;
   sortAsc = true;
-
-  sortByName() {
-
-  this.sortAsc = !this.sortAsc;
-
-  this.filteredItems.sort((a, b) => {
-
-    const nameA = a.name.first;
-    const nameB = b.name.first;
-
-    if (nameA < nameB) return this.sortAsc ? -1 : 1;
-    if (nameA > nameB) return this.sortAsc ? 1 : -1;
-    return 0;
-
-  });
-
-}
+  errorMessage = '';
 
   ngOnInit() {
-
-  if (isPlatformBrowser(this.platformId)) {
-
-    const data = localStorage.getItem('items');
-    const timestamp = localStorage.getItem('items_timestamp');
-    const now = Date.now();
-
-    if (data && timestamp && (now - Number(timestamp) < 300000)) {
-
-      this.items = JSON.parse(data);
-      this.filteredItems = [...this.items];
-      this.loading = false;
-
-    } else {
-
-      this.api.getItems().subscribe({
-        next: (res: any) => {
-          this.items = res.results;
-          this.filteredItems = [...this.items];
-
-          localStorage.setItem('items', JSON.stringify(this.items));
-          localStorage.setItem('items_timestamp', now.toString());
-
-          this.loading = false;
-        },
-        error: (err: any) => {
-          console.error(err);
-          this.loading = false;
-        }
-      });
-
-    }
-
+  if (!isPlatformBrowser(this.platformId)) {
+    this.loading = false;
+    return;
   }
 
-}
-  
-  filterItems() {
-    this.filteredItems = this.items.filter(item => {
-      const fullName = item.name.first + ' ' + item.name.last;
+  const data = localStorage.getItem('items');
+  const timestamp = localStorage.getItem('items_timestamp');
+  const now = Date.now();
 
-      return fullName.toLowerCase().includes(this.searchText.toLowerCase());    
+  if (data && timestamp && now - Number(timestamp) < 300000) {
+    this.items = JSON.parse(data);
+    this.filteredItems = [...this.items];
+    this.loading = false;
+    return;
+  }
+
+  this.api.getItems().subscribe({
+    next: (res: any) => {
+      this.items = res.results;
+      this.filteredItems = [...this.items];
+
+      localStorage.setItem('items', JSON.stringify(this.items));
+      localStorage.setItem('items_timestamp', now.toString());
+
+      this.loading = false;
+    },
+    error: (err: any) => {
+      console.error(err);
+      this.errorMessage = 'Ocurrió un problema al obtener los alumnos.';
+      this.loading = false;
+    },
+  });
+}
+
+  filterItems() {
+    const text = this.searchText.toLowerCase();
+
+    this.filteredItems = this.items.filter(item => {
+      const fullName = `${item.name.first} ${item.name.last}`.toLowerCase();
+      const email = item.email.toLowerCase();
+      const country = item.location.country.toLowerCase();
+      const state = item.location.state.toLowerCase();
+      const city = item.location.city.toLowerCase();
+
+      return (
+        fullName.includes(text) ||
+        email.includes(text) ||
+        country.includes(text) ||
+        state.includes(text) ||
+        city.includes(text)
+      );
+    });
+  }
+
+  sortByName() {
+    this.sortAsc = !this.sortAsc;
+
+    this.filteredItems.sort((a, b) => {
+      const nameA = a.name.first.toLowerCase();
+      const nameB = b.name.first.toLowerCase();
+
+      if (nameA < nameB) return this.sortAsc ? -1 : 1;
+      if (nameA > nameB) return this.sortAsc ? 1 : -1;
+      return 0;
+    });
+  }
+
+  sortByAge() {
+    this.sortAsc = !this.sortAsc;
+
+    this.filteredItems.sort((a, b) => {
+      return this.sortAsc
+        ? a.dob.age - b.dob.age
+        : b.dob.age - a.dob.age;
     });
   }
 }
-
