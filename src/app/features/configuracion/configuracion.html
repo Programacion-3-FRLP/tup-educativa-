@@ -1,0 +1,31 @@
+<h1>Configuración</h1>
+
+<div class="user-card">
+  <img
+    [src]="user.image"
+    alt="Foto de perfil"
+    width="100"
+  />
+
+  <p>Nombre: {{ user.name }}</p>
+  <p>Email: {{ user.email }}</p>
+  <p>Rol: {{ user.role }}</p>
+</div>
+
+<button (click)="logout()">
+  Cerrar sesión
+</button>
+
+<hr>
+
+<div class="app-info">
+  <h3>Información de la app</h3>
+
+  <img src="/logo.png" alt="Logo de la aplicación" width="80">
+
+  <p>Nombre: EducActiva</p>
+  <p>Versión: 1.0.0</p>
+
+  <p><strong>User Agent:</strong></p>
+  <p>{{ userAgent }}</p>
+</div>

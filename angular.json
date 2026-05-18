@@ -3,11 +3,11 @@
   "version": 1,
   "cli": {
     "packageManager": "npm",
-    "analytics": "0aee3a92-ed7b-4edf-83c9-b5e388202196"
+    "analytics": "811215f3-b527-4fa8-8119-b3251441c51a"
   },
   "newProjectRoot": "projects",
   "projects": {
-    "tup-educativa-": {
+    "mi-proyecto": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -25,7 +25,15 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/material-theme.scss", "src/styles.css"]
+            "styles": ["src/material-theme.scss", "src/styles.css"],
+            "server": "src/main.server.ts",
+            "outputMode": "server",
+            "security": {
+              "allowedHosts": []
+            },
+            "ssr": {
+              "entry": "src/server.ts"
+            }
           },
           "configurations": {
             "production": {
@@ -55,10 +63,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "tup-educativa-:build:production"
+              "buildTarget": "mi-proyecto:build:production"
             },
             "development": {
-              "buildTarget": "tup-educativa-:build:development"
+              "buildTarget": "mi-proyecto:build:development"
             }
           },
           "defaultConfiguration": "development"
