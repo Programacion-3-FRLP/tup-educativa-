@@ -1,0 +1,30 @@
+<section class="login-container">
+
+  <div class="login-card">
+
+    <img
+      src="/logo.png"
+      alt="Logo de la aplicación"
+      class="login-logo"
+    />
+
+    <h1>Iniciar sesión</h1>
+
+    <button (click)="login()" [disabled]="loading">
+
+      @if (loading) {
+
+        <span class="spinner"></span>
+        Verificando...
+
+      } @else {
+
+        Iniciar sesión
+
+      }
+
+    </button>
+
+  </div>
+
+</section>

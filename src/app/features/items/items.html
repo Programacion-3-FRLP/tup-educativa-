@@ -1,0 +1,47 @@
+<h1>Alumnos</h1>
+
+@if (loading) {
+  <p>Cargando alumnos...</p>
+}
+
+@if (errorMessage) {
+  <p>{{ errorMessage }}</p>
+}
+
+@if (!loading && !errorMessage) {
+
+  <input
+    type="text"
+    placeholder="Buscar por nombre, email o ubicación..."
+    [(ngModel)]="searchText"
+    (input)="filterItems()"
+  />
+
+  <button (click)="sortByName()">
+    Ordenar por nombre
+  </button>
+
+  <button (click)="sortByAge()">
+    Ordenar por edad
+  </button>
+
+  <ul>
+    @for (item of filteredItems; track item.login.uuid) {
+      <li>
+        <img [src]="item.picture.medium" alt="Foto del alumno" width="80" />
+
+        <p><strong>{{ item.name.first }} {{ item.name.last }}</strong></p>
+        <p>Email: {{ item.email }}</p>
+        <p>Edad: {{ item.dob.age }}</p>
+        <p>Teléfono: {{ item.phone }}</p>
+        <p>
+          {{ item.location.country }} -
+          {{ item.location.state }} -
+          {{ item.location.city }}
+        </p>
+
+        <hr />
+      </li>
+    }
+  </ul>
+}
