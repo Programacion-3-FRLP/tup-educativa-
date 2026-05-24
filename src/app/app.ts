@@ -5,7 +5,7 @@ import { Router, RouterOutlet, RouterModule } from '@angular/router';
   selector: 'app-root',
   imports: [RouterOutlet, RouterModule],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
   protected readonly title = signal('mi-proyecto');

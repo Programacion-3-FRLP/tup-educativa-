@@ -11,7 +11,6 @@ import { isPlatformBrowser } from '@angular/common';
   styleUrl: './configuracion.css',
 })
 export class Configuracion {
-
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
 
@@ -21,7 +20,7 @@ export class Configuracion {
     name: 'Ignacio Echave',
     email: 'ignacio@email.com',
     role: 'Administrador',
-    image: 'https://randomuser.me/api/portraits/men/32.jpg'
+    image: 'https://randomuser.me/api/portraits/men/32.jpg',
   };
 
   ngOnInit() {

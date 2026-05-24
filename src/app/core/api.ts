@@ -5,9 +5,8 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class Api {
-
   constructor(private http: HttpClient) {}
-  
+
   getItems() {
     return this.http.get('https://randomuser.me/api/?results=10');
   }
