@@ -3,17 +3,19 @@ import { Api } from '../../core/api';
 import { FormsModule } from '@angular/forms';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-items',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, TranslocoModule],
   templateUrl: './items.html',
   styleUrl: './items.css',
 })
 export class Items implements OnInit {
   private platformId = inject(PLATFORM_ID);
   private api = inject(Api);
+  private translocoService = inject(TranslocoService);
 
   items: any[] = [];
   filteredItems: any[] = [];
@@ -24,44 +26,44 @@ export class Items implements OnInit {
   errorMessage = '';
 
   ngOnInit() {
-  if (!isPlatformBrowser(this.platformId)) {
-    this.loading = false;
-    return;
-  }
+    if (!isPlatformBrowser(this.platformId)) {
+      this.loading = false;
+      return;
+    }
 
-  const data = localStorage.getItem('items');
-  const timestamp = localStorage.getItem('items_timestamp');
-  const now = Date.now();
+    const data = localStorage.getItem('items');
+    const timestamp = localStorage.getItem('items_timestamp');
+    const now = Date.now();
 
-  if (data && timestamp && now - Number(timestamp) < 300000) {
-    this.items = JSON.parse(data);
-    this.filteredItems = [...this.items];
-    this.loading = false;
-    return;
-  }
-
-  this.api.getItems().subscribe({
-    next: (res: any) => {
-      this.items = res.results;
+    if (data && timestamp && now - Number(timestamp) < 300000) {
+      this.items = JSON.parse(data);
       this.filteredItems = [...this.items];
-
-      localStorage.setItem('items', JSON.stringify(this.items));
-      localStorage.setItem('items_timestamp', now.toString());
-
       this.loading = false;
-    },
-    error: (err: any) => {
-      console.error(err);
-      this.errorMessage = 'Ocurrió un problema al obtener los alumnos.';
-      this.loading = false;
-    },
-  });
-}
+      return;
+    }
+
+    this.api.getItems().subscribe({
+      next: (res: any) => {
+        this.items = res.results;
+        this.filteredItems = [...this.items];
+
+        localStorage.setItem('items', JSON.stringify(this.items));
+        localStorage.setItem('items_timestamp', now.toString());
+
+        this.loading = false;
+      },
+      error: (err: any) => {
+        console.error(err);
+        this.errorMessage = this.translocoService.translate('students.errorLoad') as string;
+        this.loading = false;
+      },
+    });
+  }
 
   filterItems() {
     const text = this.searchText.toLowerCase();
 
-    this.filteredItems = this.items.filter(item => {
+    this.filteredItems = this.items.filter((item) => {
       const fullName = `${item.name.first} ${item.name.last}`.toLowerCase();
       const email = item.email.toLowerCase();
       const country = item.location.country.toLowerCase();
@@ -95,9 +97,7 @@ export class Items implements OnInit {
     this.sortAsc = !this.sortAsc;
 
     this.filteredItems.sort((a, b) => {
-      return this.sortAsc
-        ? a.dob.age - b.dob.age
-        : b.dob.age - a.dob.age;
+      return this.sortAsc ? a.dob.age - b.dob.age : b.dob.age - a.dob.age;
     });
   }
 }

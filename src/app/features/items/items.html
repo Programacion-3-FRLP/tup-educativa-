@@ -1,47 +1,49 @@
-<h1>Alumnos</h1>
+<div *transloco="let t">
+  <h1>{{ t('students.title') }}</h1>
 
-@if (loading) {
-  <p>Cargando alumnos...</p>
-}
+  @if (loading) {
+    <p>{{ t('students.statusLoading') }}</p>
+  }
 
-@if (errorMessage) {
-  <p>{{ errorMessage }}</p>
-}
+  @if (errorMessage) {
+    <p>{{ errorMessage }}</p>
+  }
 
-@if (!loading && !errorMessage) {
+  @if (!loading && !errorMessage) {
+    <input
+      type="text"
+      [placeholder]="t('students.searchPlaceholder')"
+      [(ngModel)]="searchText"
+      (input)="filterItems()"
+    />
 
-  <input
-    type="text"
-    placeholder="Buscar por nombre, email o ubicación..."
-    [(ngModel)]="searchText"
-    (input)="filterItems()"
-  />
+    <button (click)="sortByName()">
+      {{ t('students.sortByName') }}
+    </button>
 
-  <button (click)="sortByName()">
-    Ordenar por nombre
-  </button>
+    <button (click)="sortByAge()">
+      {{ t('students.sortByAge') }}
+    </button>
 
-  <button (click)="sortByAge()">
-    Ordenar por edad
-  </button>
+    <ul>
+      @for (item of filteredItems; track item.login.uuid) {
+        <li>
+          <img [src]="item.picture.medium" [alt]="t('students.photoAlt')" width="80" />
 
-  <ul>
-    @for (item of filteredItems; track item.login.uuid) {
-      <li>
-        <img [src]="item.picture.medium" alt="Foto del alumno" width="80" />
+          <p>
+            <strong>{{ item.name.first }} {{ item.name.last }}</strong>
+          </p>
+          <p>{{ t('students.email') }}: {{ item.email }}</p>
+          <p>{{ t('students.age') }}: {{ item.dob.age }}</p>
+          <p>{{ t('students.phone') }}: {{ item.phone }}</p>
+          <p>
+            {{ item.location.country }} - {{ item.location.state }} -
+            {{ item.location.city }}
+          </p>
 
-        <p><strong>{{ item.name.first }} {{ item.name.last }}</strong></p>
-        <p>Email: {{ item.email }}</p>
-        <p>Edad: {{ item.dob.age }}</p>
-        <p>Teléfono: {{ item.phone }}</p>
-        <p>
-          {{ item.location.country }} -
-          {{ item.location.state }} -
-          {{ item.location.city }}
-        </p>
-
-        <hr />
-      </li>
-    }
-  </ul>
-}
+          <hr />
+        </li>
+      }
+    </ul>
+  }
+</div>

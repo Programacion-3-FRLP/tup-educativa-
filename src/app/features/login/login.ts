@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { TranslocoModule } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [],
+  imports: [TranslocoModule],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })

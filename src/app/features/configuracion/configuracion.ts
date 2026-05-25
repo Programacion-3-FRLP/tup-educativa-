@@ -2,18 +2,19 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-configuracion',
   standalone: true,
-  imports: [],
+  imports: [TranslocoModule],
   templateUrl: './configuracion.html',
   styleUrl: './configuracion.css',
 })
 export class Configuracion {
-
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
+  private translocoService = inject(TranslocoService);
 
   userAgent = '';
 
@@ -21,7 +22,7 @@ export class Configuracion {
     name: 'Ignacio Echave',
     email: 'ignacio@email.com',
     role: 'Administrador',
-    image: 'https://randomuser.me/api/portraits/men/32.jpg'
+    image: 'https://randomuser.me/api/portraits/men/32.jpg',
   };
 
   ngOnInit() {
@@ -31,7 +32,8 @@ export class Configuracion {
   }
 
   logout() {
-    const confirmacion = confirm('¿Seguro que querés cerrar sesión?');
+    const mensajeConfirmacion = this.translocoService.translate('config.logoutConfirm');
+    const confirmacion = confirm(mensajeConfirmacion);
 
     if (confirmacion) {
       sessionStorage.removeItem('auth');
