@@ -3,11 +3,13 @@ import { Router } from '@angular/router';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
+import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-configuracion',
   standalone: true,
-  imports: [TranslocoModule],
+  imports: [TranslocoModule, MatButtonModule, MatMenuModule],
   templateUrl: './configuracion.html',
   styleUrl: './configuracion.css',
 })
@@ -29,6 +31,10 @@ export class Configuracion {
     if (isPlatformBrowser(this.platformId)) {
       this.userAgent = navigator.userAgent;
     }
+  }
+
+  cambiarIdioma(idioma: string) {
+    this.translocoService.setActiveLang(idioma);
   }
 
   logout() {
