@@ -6,7 +6,13 @@ import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterModule, TranslocoModule, MatButtonModule, MatMenuModule],
+  imports: [
+    RouterOutlet,
+    RouterModule,
+    TranslocoModule,
+    MatButtonModule,
+    MatMenuModule,
+  ],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -20,7 +26,7 @@ export class App {
     return this.router.url !== '/login' && this.router.url !== '/';
   }
 
-  cambiarIdioma(idioma: string) {
+  cambiarIdioma(idioma: string): void {
     this.translocoService.setActiveLang(idioma);
   }
 }
