@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
-import { AuthService } from '../../core/auth.service';
+import { AuthService } from '@core/auth.service';
 
 @Component({
   selector: 'app-configuracion',
