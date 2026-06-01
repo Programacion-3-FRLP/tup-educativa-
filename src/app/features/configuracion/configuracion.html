@@ -3,18 +3,15 @@
 @if (authService.user(); as user) {
   <div class="user-card">
     @if (user.photoURL) {
-  <img
-    [src]="user.photoURL"
-    alt="Foto de perfil"
-    width="100"
-  />
-} @else {
-  <img
-    src="/logo.png"
-    alt="Foto por defecto"
-    width="100"
-  />
-}
+      <img
+        [src]="user.photoURL"
+        alt="Foto de perfil"
+        width="100"
+        (error)="$any($event.target).src = '/logo.png'"
+      />
+    } @else {
+      <img src="/logo.png" alt="Foto por defecto" width="100" />
+    }
 
     <p>Nombre: {{ user.displayName }}</p>
     <p>Email: {{ user.email }}</p>
@@ -24,16 +21,14 @@
   <p>No hay usuario autenticado.</p>
 }
 
-<button (click)="logout()">
-  Cerrar sesión
-</button>
+<button (click)="logout()">Cerrar sesión</button>
 
-<hr>
+<hr />
 
 <div class="app-info">
   <h3>Información de la app</h3>
 
-  <img src="/logo.png" alt="Logo de la aplicación" width="80">
+  <img src="/logo.png" alt="Logo de la aplicación" width="80" />
 
   <p>Nombre: EducActiva</p>
   <p>Versión: 1.0.0</p>
