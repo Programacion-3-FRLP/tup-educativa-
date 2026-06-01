@@ -43,12 +43,7 @@ export class AuthService {
     return signOut(auth);
   }
 
-  isAuthenticated(): Promise<boolean> {
-    return new Promise((resolve) => {
-      onAuthStateChanged(auth, (user) => {
-        this.user.set(user);
-        resolve(!!user);
-      });
-    });
+  isAuthenticated(): boolean {
+    return !!this.user();
   }
 }
