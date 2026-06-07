@@ -29,9 +29,20 @@ const provider = new GoogleAuthProvider();
 export class AuthService {
   user = signal<User | null>(null);
 
+  private authReady: Promise<void>;
+
   constructor() {
-    onAuthStateChanged(auth, (user: User | null) => {
-      this.user.set(user);
+    this.authReady = new Promise((resolve) => {
+      let initialized = false;
+
+      onAuthStateChanged(auth, (user: User | null) => {
+        this.user.set(user);
+
+        if (!initialized) {
+          initialized = true;
+          resolve();
+        }
+      });
     });
   }
 
@@ -39,8 +50,14 @@ export class AuthService {
     return signInWithPopup(auth, provider);
   }
 
-  logout() {
-    return signOut(auth);
+  async logout(): Promise<void> {
+    await signOut(auth);
+    this.user.set(null);
+  }
+
+  async waitForAuthState(): Promise<User | null> {
+    await this.authReady;
+    return this.user();
   }
 
   isAuthenticated(): boolean {

@@ -25,12 +25,12 @@ export class Configuracion {
     }
   }
 
-  async logout() {
+  async logout(): Promise<void> {
     const confirmacion = confirm('¿Seguro que querés cerrar sesión?');
 
     if (confirmacion) {
       await this.authService.logout();
-      this.router.navigate(['/login']);
+      await this.router.navigate(['/login']);
     }
   }
 }
