@@ -1,49 +1,60 @@
 <div *transloco="let t">
   <h1>{{ t('students.title') }}</h1>
 
-  @if (loading) {
-    <p>{{ t('students.statusLoading') }}</p>
-  }
+  @if (loading()) {
+  <p role="status" aria-live="polite">{{ t('students.statusLoading') }}</p>
+  } @if (hasError()) {
+  <div role="alert">
+    <p>{{ t('students.errorLoad') }}</p>
 
-  @if (errorMessage) {
-    <p>{{ errorMessage }}</p>
-  }
+    <button type="button" (click)="refreshItems()">Reintentar</button>
+  </div>
+  } @if (!loading() && !hasError()) {
+  <label for="student-search"> {{ t('students.searchPlaceholder') }} </label>
 
-  @if (!loading && !errorMessage) {
-    <input
-      type="text"
-      [placeholder]="t('students.searchPlaceholder')"
-      [(ngModel)]="searchText"
-      (input)="filterItems()"
-    />
+  <input
+    id="student-search"
+    type="search"
+    [placeholder]="t('students.searchPlaceholder')"
+    [ngModel]="searchText()"
+    (ngModelChange)="updateSearchText($event)"
+  />
 
-    <button (click)="sortByName()">
-      {{ t('students.sortByName') }}
-    </button>
+  <button type="button" (click)="sortByName()">
+    {{ t('students.sortByName') }}
+  </button>
 
-    <button (click)="sortByAge()">
-      {{ t('students.sortByAge') }}
-    </button>
+  <button type="button" (click)="sortByAge()">
+    {{ t('students.sortByAge') }}
+  </button>
 
-    <ul>
-      @for (item of filteredItems; track item.login.uuid) {
-        <li>
-          <img [src]="item.picture.medium" [alt]="t('students.photoAlt')" width="80" />
+  <ul>
+    @for (item of filteredItems(); track item.login.uuid) {
+    <li>
+      <img
+        [src]="item.picture.medium"
+        [alt]="t('students.photoAlt')"
+        width="80"
+        height="80"
+        loading="lazy"
+      />
 
-          <p>
-            <strong>{{ item.name.first }} {{ item.name.last }}</strong>
-          </p>
-          <p>{{ t('students.email') }}: {{ item.email }}</p>
-          <p>{{ t('students.age') }}: {{ item.dob.age }}</p>
-          <p>{{ t('students.phone') }}: {{ item.phone }}</p>
-          <p>
-            {{ item.location.country }} - {{ item.location.state }} -
-            {{ item.location.city }}
-          </p>
+      <p>
+        <strong> {{ item.name.first }} {{ item.name.last }} </strong>
+      </p>
 
-          <hr />
-        </li>
-      }
-    </ul>
+      <p>{{ t('students.email') }}: {{ item.email }}</p>
+      <p>{{ t('students.age') }}: {{ item.dob.age }}</p>
+      <p>{{ t('students.phone') }}: {{ item.phone }}</p>
+
+      <p>
+        {{ item.location.country }} - {{ item.location.state }} - {{
+        item.location.city }}
+      </p>
+    </li>
+    } @empty {
+    <li>No se encontraron alumnos.</li>
+    }
+  </ul>
   }
 </div>

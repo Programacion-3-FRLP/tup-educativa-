@@ -1,37 +1,60 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { inject, Injectable, signal } from '@angular/core';
 import { Api } from './api';
+import { Item } from './item.model';
 import { LocalStorageService } from './local-storage.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StateManagerService {
-  private items$ = new BehaviorSubject<any[]>([]);
+  private readonly api = inject(Api);
+  private readonly localStorageService = inject(LocalStorageService);
+  private readonly storageKey = 'items';
 
-  constructor(
-    private api: Api,
-    private localStorageService: LocalStorageService,
-  ) {}
+  private readonly itemsState = signal<Item[]>([]);
+  private readonly loadingState = signal(false);
+  private readonly errorState = signal(false);
 
-  getItems(): Observable<any[]> {
-    return this.items$.asObservable();
-  }
+  readonly items = this.itemsState.asReadonly();
+  readonly loading = this.loadingState.asReadonly();
+  readonly hasError = this.errorState.asReadonly();
 
   loadItems(): void {
-    const cached = this.localStorageService.get<any[]>('items');
-    if (cached) {
-      this.items$.next(cached);
-    } else {
-      this.loadFromApi();
+    const cachedItems = this.localStorageService.get<Item[]>(this.storageKey);
+
+    if (cachedItems) {
+      this.itemsState.set(cachedItems);
+      this.errorState.set(false);
+      return;
     }
+
+    this.loadFromApi();
   }
 
-  loadFromApi(): void {
-    this.api.getItems().subscribe((response: any) => {
-      this.items$.next(response.results);
+  refreshItems(): void {
+    this.localStorageService.remove(this.storageKey);
+    this.loadFromApi();
+  }
 
-      this.localStorageService.save('items', response.results);
+  private loadFromApi(): void {
+    if (this.loadingState()) {
+      return;
+    }
+
+    this.loadingState.set(true);
+    this.errorState.set(false);
+
+    this.api.getItems().subscribe({
+      next: (response) => {
+        this.itemsState.set(response.results);
+        this.localStorageService.save(this.storageKey, response.results);
+        this.loadingState.set(false);
+      },
+      error: (error: unknown) => {
+        console.error('Error al obtener los alumnos', error);
+        this.errorState.set(true);
+        this.loadingState.set(false);
+      },
     });
   }
 }
