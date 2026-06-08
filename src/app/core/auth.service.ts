@@ -50,9 +50,12 @@ export class AuthService {
     return signInWithPopup(auth, provider);
   }
 
-  async logout(): Promise<void> {
-    await signOut(auth);
-    this.user.set(null);
+  logout(): Promise<void> {
+    return signOut(auth);
+  }
+
+  listenAuthState(callback: (user: User | null) => void) {
+    return onAuthStateChanged(auth, callback);
   }
 
   async waitForAuthState(): Promise<User | null> {

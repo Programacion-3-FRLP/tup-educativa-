@@ -22,13 +22,16 @@ export class Login {
     this.loading = true;
 
     try {
-      const result = await this.authService.loginWithGoogle();
-      console.log('Usuario logueado:', result.user);
+      const unsubscribe = this.authService.listenAuthState(async (user) => {
+        if (user) {
+          unsubscribe();
+          await this.router.navigate(['/items']);
+        }
+      });
 
-      await this.router.navigate(['/items']);
+      await this.authService.loginWithGoogle();
     } catch (error) {
       console.error('Error al iniciar sesión con Google', error);
-    } finally {
       this.loading = false;
     }
   }

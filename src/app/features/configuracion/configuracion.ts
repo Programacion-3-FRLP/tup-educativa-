@@ -28,9 +28,21 @@ export class Configuracion {
   async logout(): Promise<void> {
     const confirmacion = confirm('¿Seguro que querés cerrar sesión?');
 
-    if (confirmacion) {
+    if (!confirmacion) {
+      return;
+    }
+
+    try {
+      const unsubscribe = this.authService.listenAuthState(async (user) => {
+        if (user === null) {
+          unsubscribe();
+          await this.router.navigate(['/login']);
+        }
+      });
+
       await this.authService.logout();
-      await this.router.navigate(['/login']);
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
     }
   }
 }
