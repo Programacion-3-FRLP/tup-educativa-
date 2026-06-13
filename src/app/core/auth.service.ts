@@ -1,13 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { initializeApp } from 'firebase/app';
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signOut,
-  onAuthStateChanged,
-  User,
-} from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, User } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCMYA1dQ6HRTPj_5UeuH02W1dwfCCYzCWo',
@@ -35,7 +28,7 @@ export class AuthService {
     this.authReady = new Promise((resolve) => {
       let initialized = false;
 
-      onAuthStateChanged(auth, (user: User | null) => {
+      auth.onAuthStateChanged((user: User | null) => {
         this.user.set(user);
 
         if (!initialized) {
@@ -52,10 +45,6 @@ export class AuthService {
 
   logout(): Promise<void> {
     return signOut(auth);
-  }
-
-  listenAuthState(callback: (user: User | null) => void) {
-    return onAuthStateChanged(auth, callback);
   }
 
   async waitForAuthState(): Promise<User | null> {

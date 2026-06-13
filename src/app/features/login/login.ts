@@ -22,14 +22,8 @@ export class Login {
     this.loading = true;
 
     try {
-      const unsubscribe = this.authService.listenAuthState(async (user) => {
-        if (user) {
-          unsubscribe();
-          await this.router.navigate(['/items']);
-        }
-      });
-
       await this.authService.loginWithGoogle();
+      await this.router.navigate(['/items']);
     } catch (error) {
       console.error('Error al iniciar sesión con Google', error);
       this.loading = false;

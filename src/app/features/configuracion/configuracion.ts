@@ -33,14 +33,8 @@ export class Configuracion {
     }
 
     try {
-      const unsubscribe = this.authService.listenAuthState(async (user) => {
-        if (user === null) {
-          unsubscribe();
-          await this.router.navigate(['/login']);
-        }
-      });
-
       await this.authService.logout();
+      await this.router.navigate(['/login']);
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
     }
