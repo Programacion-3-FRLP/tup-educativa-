@@ -1,31 +1,31 @@
-<h1>Configuración</h1>
+<div *transloco="let t">
+  <h1>{{ t('config.title') }}</h1>
 
-<div class="user-card">
-  <img
-    [src]="user.image"
-    alt="Foto de perfil"
-    width="100"
-  />
+  <div class="user-card">
+    <img [src]="user.image" [alt]="t('config.profilePhotoAlt')" width="100" />
 
-  <p>Nombre: {{ user.name }}</p>
-  <p>Email: {{ user.email }}</p>
-  <p>Rol: {{ user.role }}</p>
-</div>
+    <p>{{ t('config.name') }}: {{ user.name }}</p>
+    <p>{{ t('config.email') }}: {{ user.email }}</p>
+    <p>{{ t('config.role') }}: {{ user.role }}</p>
+  </div>
 
-<button (click)="logout()">
-  Cerrar sesión
-</button>
+  <button (click)="logout()">
+    {{ t('config.logout') }}
+  </button>
 
-<hr>
+  <hr />
 
-<div class="app-info">
-  <h3>Información de la app</h3>
+  <div class="app-info">
+    <h3>{{ t('config.appInfo') }}</h3>
 
-  <img src="/logo.png" alt="Logo de la aplicación" width="80">
+    <img src="/logo.png" [alt]="t('login.logoAlt')" width="80" />
 
-  <p>Nombre: EducActiva</p>
-  <p>Versión: 1.0.0</p>
+    <p>{{ t('config.name') }}: EducActiva</p>
+    <p>{{ t('config.version') }}: 1.0.0</p>
 
-  <p><strong>User Agent:</strong></p>
-  <p>{{ userAgent }}</p>
+    <p>
+      <strong>{{ t('config.userAgent') }}:</strong>
+    </p>
+    <p>{{ userAgent }}</p>
+  </div>
 </div>

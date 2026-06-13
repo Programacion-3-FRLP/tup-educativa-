@@ -6,7 +6,11 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "lint": "ng lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky"
   },
   "private": true,
   "packageManager": "npm@11.12.1",
@@ -20,15 +24,29 @@
     "@angular/platform-browser": "^21.2.0",
     "@angular/platform-server": "^21.2.0",
     "@angular/router": "^21.2.0",
+    "@jsverse/transloco": "^8.3.0",
     "rxjs": "~7.8.0",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "zone.js": "^0.16.2"
   },
   "devDependencies": {
     "@angular/build": "^21.2.7",
     "@angular/cli": "^21.2.7",
     "@angular/compiler-cli": "^21.2.0",
+    "@eslint/js": "^9.39.4",
     "@types/node": "^20.17.19",
-    "prettier": "^3.8.1",
-    "typescript": "~5.9.2"
+    "angular-eslint": "21.4.0",
+    "eslint": "^9.39.4",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.5",
+    "prettier": "^3.8.3",
+    "typescript": "~5.9.2",
+    "typescript-eslint": "8.59.2"
+  },
+  "lint-staged": {
+    "*.{ts,html,css,scss,json,md}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   }
 }
