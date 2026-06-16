@@ -1,38 +1,44 @@
-<h1>Configuración</h1>
+<div *transloco="let t">
+  <h1>{{ t('config.title') }}</h1>
 
-@if (authService.user(); as user) {
-  <div class="user-card">
-    @if (user.photoURL) {
-      <img
-        [src]="user.photoURL"
-        alt="Foto de perfil"
-        width="100"
-        (error)="$any($event.target).src = '/logo.png'"
-      />
-    } @else {
-      <img src="/logo.png" alt="Foto por defecto" width="100" />
-    }
+  @if (authService.user(); as user) {
+    <div class="user-card">
+      @if (user.photoURL) {
+        <img
+          [src]="user.photoURL"
+          [alt]="t('config.profilePhotoAlt')"
+          width="100"
+          (error)="$any($event.target).src = '/logo.png'"
+        />
+      } @else {
+        <img src="/logo.png" [alt]="t('config.profilePhotoAlt')" width="100" />
+      }
 
-    <p>Nombre: {{ user.displayName }}</p>
-    <p>Email: {{ user.email }}</p>
-    <p>UID: {{ user.uid }}</p>
+      <p>{{ t('config.name') }}: {{ user.displayName }}</p>
+      <p>{{ t('config.email') }}: {{ user.email }}</p>
+      <p>UID: {{ user.uid }}</p>
+    </div>
+  } @else {
+    <p>No hay usuario autenticado.</p>
+  }
+
+  <button (click)="logout()">
+    {{ t('config.logout') }}
+  </button>
+
+  <hr />
+
+  <div class="app-info">
+    <h3>{{ t('config.appInfo') }}</h3>
+
+    <img src="/logo.png" [alt]="t('login.logoAlt')" width="80" />
+
+    <p>{{ t('config.name') }}: EducActiva</p>
+    <p>{{ t('config.version') }}: 1.0.0</p>
+
+    <p>
+      <strong>{{ t('config.userAgent') }}:</strong>
+    </p>
+    <p>{{ userAgent }}</p>
   </div>
-} @else {
-  <p>No hay usuario autenticado.</p>
-}
-
-<button (click)="logout()">Cerrar sesión</button>
-
-<hr />
-
-<div class="app-info">
-  <h3>Información de la app</h3>
-
-  <img src="/logo.png" alt="Logo de la aplicación" width="80" />
-
-  <p>Nombre: EducActiva</p>
-  <p>Versión: 1.0.0</p>
-
-  <p><strong>User Agent:</strong></p>
-  <p>{{ userAgent }}</p>
 </div>
