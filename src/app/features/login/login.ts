@@ -23,7 +23,11 @@ export class Login {
 
     try {
       await this.authService.loginWithGoogle();
-      await this.router.navigate(['/items']);
+      await this.authService.waitForAuthState();
+
+      if (this.authService.isAuthenticated()) {
+        await this.router.navigate(['/items']);
+      }
     } catch (error) {
       console.error('Error al iniciar sesión con Google', error);
       this.loading = false;
