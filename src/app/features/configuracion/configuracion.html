@@ -1,17 +1,19 @@
 <div *transloco="let t">
   <h1>{{ t('config.title') }}</h1>
 
+  @if (!enRutaCuenta()) {
   <div class="user-card">
-    <img [src]="user.image" [alt]="t('config.profilePhotoAlt')" width="100" />
+    <div class="card-header">
+      <img [src]="user.image" [alt]="t('config.profilePhotoAlt')" width="100" />
+      <button class="edit-btn" routerLink="cuenta">Editar</button>
+    </div>
 
     <p>{{ t('config.name') }}: {{ user.name }}</p>
     <p>{{ t('config.email') }}: {{ user.email }}</p>
     <p>{{ t('config.role') }}: {{ user.role }}</p>
   </div>
 
-  <button (click)="logout()">
-    {{ t('config.logout') }}
-  </button>
+  <button (click)="logout()">{{ t('config.logout') }}</button>
 
   <hr />
 
@@ -28,4 +30,7 @@
     </p>
     <p>{{ userAgent }}</p>
   </div>
+  } @else {
+  <router-outlet></router-outlet>
+  }
 </div>
