@@ -1,2 +1,7 @@
 node_modules
 .angular/
+
+/dist
+dist/
+# Sentry Config File
+.sentryclirc
