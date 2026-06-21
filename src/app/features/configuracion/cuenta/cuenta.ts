@@ -6,6 +6,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { StateManagerService } from '../../../core/state-manager.service';
 
 @Component({
   selector: 'app-cuenta',
@@ -17,15 +18,13 @@ import { Router } from '@angular/router';
 export class Cuenta implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private stateManager = inject(StateManagerService);
 
   cuentaForm!: FormGroup;
 
-  user = {
-    name: 'Ignacio Echave',
-    email: 'ignacio@email.com',
-    role: 'Administrador',
-    image: 'https://randomuser.me/api/portraits/men/32.jpg',
-  };
+  get user() {
+    return this.stateManager.user();
+  }
 
   ngOnInit() {
     this.cuentaForm = this.fb.group({
@@ -33,10 +32,18 @@ export class Cuenta implements OnInit {
       email: [{ value: this.user.email, disabled: true }],
       role: [{ value: this.user.role, disabled: true }],
 
-      fechaNacimiento: [''],
-      direccion: [''],
-      telefonos: this.fb.array([this.fb.control('')]),
+      fechaNacimiento: [this.user.fechaNacimiento || ''],
+      direccion: [this.user.direccion || ''],
+      telefonos: this.fb.array([]),
     });
+
+    if (this.user.telefonos && this.user.telefonos.length > 0) {
+      this.user.telefonos.forEach((tel: string) => {
+        this.telefonos.push(this.fb.control(tel));
+      });
+    } else {
+      this.telefonos.push(this.fb.control(''));
+    }
   }
 
   get telefonos(): FormArray {
@@ -54,7 +61,10 @@ export class Cuenta implements OnInit {
   }
 
   guardar() {
-    console.log('Datos guardados con éxito:', this.cuentaForm.getRawValue());
+    const datosModificados = this.cuentaForm.getRawValue();
+    this.stateManager.updateUser(datosModificados);
+
+    console.log('Datos guardados con éxito:', datosModificados);
     this.router.navigate(['/configuracion']);
   }
 

@@ -5,6 +5,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
+import { StateManagerService } from '../../core/state-manager.service';
 
 @Component({
   selector: 'app-configuracion',
@@ -13,8 +14,8 @@ import { MatMenuModule } from '@angular/material/menu';
     TranslocoModule,
     MatButtonModule,
     MatMenuModule,
-    RouterOutlet, // Agregado para habilitar <router-outlet> en el HTML
-    RouterLink, // Agregado para habilitar routerLink="cuenta" en el HTML
+    RouterOutlet,
+    RouterLink,
   ],
   templateUrl: './configuracion.html',
   styleUrl: './configuracion.css',
@@ -23,15 +24,15 @@ export class Configuracion {
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
   private translocoService = inject(TranslocoService);
+  private stateManager = inject(StateManagerService);
 
   userAgent = '';
 
-  user = {
-    name: 'Ignacio Echave',
-    email: 'ignacio@email.com',
-    role: 'Administrador',
-    image: 'https://randomuser.me/api/portraits/men/32.jpg',
-  };
+  // Al usar una función getter que ejecuta el Signal directo (), Angular
+  // actualiza el HTML automáticamente apenas cambia el estado en el servicio.
+  get user() {
+    return this.stateManager.user();
+  }
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
@@ -39,7 +40,6 @@ export class Configuracion {
     }
   }
 
-  // Método para controlar la renderización condicional del formulario
   enRutaCuenta(): boolean {
     return this.router.url === '/configuracion/cuenta';
   }

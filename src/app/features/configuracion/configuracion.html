@@ -11,6 +11,20 @@
     <p>{{ t('config.name') }}: {{ user.name }}</p>
     <p>{{ t('config.email') }}: {{ user.email }}</p>
     <p>{{ t('config.role') }}: {{ user.role }}</p>
+
+    @if (user.fechaNacimiento) {
+    <p><strong>Fecha de Nacimiento:</strong> {{ user.fechaNacimiento }}</p>
+    } @if (user.direccion) {
+    <p><strong>Dirección:</strong> {{ user.direccion }}</p>
+    } @if (user.telefonos && user.telefonos.length > 0 && user.telefonos[0] !==
+    '') {
+    <p><strong>Teléfonos:</strong></p>
+    <ul>
+      @for (tel of user.telefonos; track tel) { @if (tel) {
+      <li>{{ tel }}</li>
+      } }
+    </ul>
+    }
   </div>
 
   <button (click)="logout()">{{ t('config.logout') }}</button>
