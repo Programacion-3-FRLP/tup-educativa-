@@ -55,9 +55,7 @@ export class Cuenta implements OnInit {
   }
 
   removerTelefono(index: number) {
-    if (this.telefonos.length > 1) {
-      this.telefonos.removeAt(index);
-    }
+    this.telefonos.removeAt(index);
   }
 
   guardar() {

@@ -52,7 +52,7 @@
         <label>Teléfonos</label>
 
         <div formArrayName="telefonos">
-          @for (tel of telefonos.controls; track $index) {
+          @for (tel of telefonos.controls; track tel) {
           <div class="telefono-row">
             <input
               [formControlName]="$index"
@@ -60,7 +60,6 @@
               placeholder="Número de teléfono"
             />
 
-            @if (telefonos.length > 1) {
             <button
               type="button"
               class="remove-btn"
@@ -68,7 +67,6 @@
             >
               ✕
             </button>
-            }
           </div>
           }
         </div>
