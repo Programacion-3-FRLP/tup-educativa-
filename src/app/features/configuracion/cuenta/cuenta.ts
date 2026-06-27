@@ -4,6 +4,7 @@ import {
   FormGroup,
   FormArray,
   ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { StateManagerService } from '../../../core/state-manager.service';
@@ -33,16 +34,35 @@ export class Cuenta implements OnInit {
       role: [{ value: this.user.role, disabled: true }],
 
       fechaNacimiento: [this.user.fechaNacimiento || ''],
-      direccion: [this.user.direccion || ''],
+      direccion: [
+        this.user.direccion || '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(128),
+        ],
+      ],
       telefonos: this.fb.array([]),
     });
 
     if (this.user.telefonos && this.user.telefonos.length > 0) {
       this.user.telefonos.forEach((tel: string) => {
-        this.telefonos.push(this.fb.control(tel));
+        this.telefonos.push(
+          this.fb.control(tel, [
+            Validators.required,
+            Validators.minLength(10),
+            Validators.maxLength(15),
+          ]),
+        );
       });
     } else {
-      this.telefonos.push(this.fb.control(''));
+      this.telefonos.push(
+        this.fb.control('', [
+          Validators.required,
+          Validators.minLength(10),
+          Validators.maxLength(15),
+        ]),
+      );
     }
   }
 
@@ -51,7 +71,13 @@ export class Cuenta implements OnInit {
   }
 
   agregarTelefono() {
-    this.telefonos.push(this.fb.control(''));
+    this.telefonos.push(
+      this.fb.control('', [
+        Validators.required,
+        Validators.minLength(10),
+        Validators.maxLength(15),
+      ]),
+    );
   }
 
   removerTelefono(index: number) {
@@ -59,6 +85,10 @@ export class Cuenta implements OnInit {
   }
 
   guardar() {
+    if (this.cuentaForm.invalid) {
+      return;
+    }
+
     const datosModificados = this.cuentaForm.getRawValue();
     this.stateManager.updateUser(datosModificados);
 

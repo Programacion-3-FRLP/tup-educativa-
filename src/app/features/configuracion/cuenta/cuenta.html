@@ -57,6 +57,9 @@
             <input
               [formControlName]="$index"
               type="tel"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              (keypress)="($event.charCode >= 48 && $event.charCode <= 57)"
               placeholder="Número de teléfono"
             />
 
@@ -81,7 +84,9 @@
       <button type="button" class="cancel-btn" (click)="cancelar()">
         Cancelar
       </button>
-      <button type="submit" class="save-btn">Guardar</button>
+      <button type="submit" class="save-btn" [disabled]="cuentaForm.invalid">
+        Guardar
+      </button>
     </div>
   </form>
 </div>
