@@ -2,29 +2,27 @@
   <h1>{{ t('config.title') }}</h1>
 
   @if (authService.user(); as user) {
-    <div class="user-card">
-      @if (user.photoURL) {
-        <img
-          [src]="user.photoURL"
-          [alt]="t('config.profilePhotoAlt')"
-          width="100"
-          (error)="$any($event.target).src = '/logo.png'"
-        />
-      } @else {
-        <img src="/logo.png" [alt]="t('config.profilePhotoAlt')" width="100" />
-      }
+  <div class="user-card">
+    @if (user.photoURL) {
+    <img
+      [src]="user.photoURL"
+      [alt]="t('config.profilePhotoAlt')"
+      width="100"
+      (error)="$any($event.target).src = '/logo.png'"
+    />
+    } @else {
+    <img src="/logo.png" [alt]="t('config.profilePhotoAlt')" width="100" />
+    }
 
-      <p>{{ t('config.name') }}: {{ user.displayName }}</p>
-      <p>{{ t('config.email') }}: {{ user.email }}</p>
-      <p>UID: {{ user.uid }}</p>
-    </div>
+    <p>{{ t('config.name') }}: {{ user.displayName }}</p>
+    <p>{{ t('config.email') }}: {{ user.email }}</p>
+    <p>UID: {{ user.uid }}</p>
+  </div>
   } @else {
-    <p>No hay usuario autenticado.</p>
+  <p>No hay usuario autenticado.</p>
   }
 
-  <button (click)="logout()">
-    {{ t('config.logout') }}
-  </button>
+  <button (click)="logout()">{{ t('config.logout') }}</button>
 
   <hr />
 
@@ -41,6 +39,6 @@
     </p>
     <p>{{ userAgent }}</p>
   </div>
-</div>
+
   <button (click)="logout()">{{ t('config.logout') }}</button>
 </div>
