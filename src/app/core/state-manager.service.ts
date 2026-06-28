@@ -10,14 +10,46 @@ export class StateManagerService {
   private readonly api = inject(Api);
   private readonly localStorageService = inject(LocalStorageService);
   private readonly storageKey = 'items';
+  private readonly userStorageKey = 'user_profile';
 
   private readonly itemsState = signal<Item[]>([]);
   private readonly loadingState = signal(false);
   private readonly errorState = signal(false);
 
+  private readonly userState = signal({
+    name: 'Ignacio Echave',
+    email: 'ignacio@email.com',
+    role: 'Administrador',
+    image: 'https://randomuser.me/api/portraits/men/32.jpg',
+    fechaNacimiento: '',
+    direccion: '',
+    telefonos: [''],
+  });
+
   readonly items = this.itemsState.asReadonly();
   readonly loading = this.loadingState.asReadonly();
   readonly hasError = this.errorState.asReadonly();
+
+  readonly user = this.userState.asReadonly();
+
+  constructor() {
+    this.loadUser();
+  }
+
+  private loadUser(): void {
+    const cachedUser = this.localStorageService.get<any>(this.userStorageKey);
+    if (cachedUser) {
+      this.userState.set(cachedUser);
+    }
+  }
+
+  updateUser(updatedData: any): void {
+    const currentUser = this.userState();
+    const newUserState = { ...currentUser, ...updatedData };
+
+    this.userState.set(newUserState);
+    this.localStorageService.save(this.userStorageKey, newUserState, 86400000);
+  }
 
   loadItems(): void {
     const cachedItems = this.localStorageService.get<Item[]>(this.storageKey);
