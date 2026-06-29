@@ -1,30 +1,29 @@
 @if (mostrarLayout()) {
 <div class="layout">
-  <nav class="sidebar">
-    <button routerLink="/items">Items</button>
-    <button routerLink="/configuracion">Configuración</button>
-
+  <header class="header">
+    <div class="header-logo"></div>
     <div class="language-selection">
-      <button mat-button [matMenuTriggerFor]="menuLanguage">
-        Cambiar Idioma / Change Language
+      <button (click)="cambiarIdioma('es')">ES</button>
+      <span class="separator">/</span>
+      <button (click)="cambiarIdioma('en')">EN</button>
+    </div>
+  </header>
+
+  <div class="main-container">
+    <nav class="sidebar">
+      <button routerLink="/items" class="sidebar-btn">Alumnos</button>
+      <button routerLink="/configuracion" class="sidebar-btn">
+        Configuración
       </button>
-      <mat-menu #menuLanguage="matMenu">
-        <button mat-menu-item (click)="cambiarIdioma('es')">Español</button>
-        <button mat-menu-item (click)="cambiarIdioma('en')">English</button>
-      </mat-menu>
-    </div>
+    </nav>
 
-    <div class="sidebar-footer">
-      <button (click)="abrirInfo()" class="info-btn">Información</button>
-    </div>
-  </nav>
-
-  <main class="content">
-    <router-outlet></router-outlet>
-  </main>
+    <main class="content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
 
   <nav class="bottom-bar">
-    <button routerLink="/items">Items</button>
+    <button routerLink="/items">Alumnos</button>
     <button routerLink="/configuracion">Configuración</button>
   </nav>
 </div>
