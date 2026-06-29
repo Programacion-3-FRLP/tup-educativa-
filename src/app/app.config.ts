@@ -1,17 +1,25 @@
-import * as Sentry from "@sentry/angular";
-import { ApplicationConfig, ErrorHandler, provideAppInitializer, inject } from '@angular/core';
+import * as Sentry from '@sentry/angular';
+import { ApplicationConfig, ErrorHandler, inject, provideAppInitializer } from '@angular/core';
 import { provideRouter, Router } from '@angular/router';
 
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes), {
-    provide: ErrorHandler,
-    useValue: Sentry.createErrorHandler()
-  }, {
-    provide: Sentry.TraceService,
-    deps: [Router]
-  }, provideAppInitializer(() => {
-    inject(Sentry.TraceService);
-  })],
+  providers: [
+    provideRouter(routes),
+
+    {
+      provide: ErrorHandler,
+      useValue: Sentry.createErrorHandler(),
+    },
+
+    {
+      provide: Sentry.TraceService,
+      deps: [Router],
+    },
+
+    provideAppInitializer(() => {
+      inject(Sentry.TraceService);
+    }),
+  ],
 };

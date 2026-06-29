@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
-import { AuthService } from '@core/auth.service';
+import { AuthService } from '../../core/auth.service';
 
 @Component({
   selector: 'app-configuracion',
@@ -18,6 +18,13 @@ export class Configuracion {
   authService = inject(AuthService);
 
   userAgent = '';
+
+  user = {
+    name: 'Usuario de prueba',
+    email: sessionStorage.getItem('userEmail') ?? 'usuario.prueba@educactiva.com',
+    role: 'Estudiante',
+    image: 'https://i.pravatar.cc/150?img=3',
+  };
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
