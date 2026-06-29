@@ -76,19 +76,46 @@
 .content {
   flex: 1;
   padding: 1.25rem;
+  overflow-y: auto;
 }
 
 .bottom-bar {
   display: none;
 }
 
+.sidebar-footer {
+  margin-top: auto;
+  margin-bottom: 1 rem;
+}
+
+.info-btn {
+  display: block;
+  width: 100%;
+  padding: 0.875rem 1rem;
+  font-size: 1.125rem;
+  text-align: center;
+  background: #fff;
+  border: 0.0625rem solid #ccc;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-sizing: border-box;
+}
+
 @media (max-width: 48rem) {
   .main-container {
     flex-direction: column;
+    height: auto;
+    overflow: visible;
   }
 
   .sidebar {
     display: none;
+  }
+
+  .content {
+    overflow-y: visible;
+    padding-bottom: 5rem;
   }
 
   .bottom-bar {
@@ -98,7 +125,8 @@
     bottom: 0;
     width: 100%;
     background: #ddd;
-    padding: 0.625rem;
+    padding: 0.875rem 1rem;
+    z-index: 10;
   }
 
   .content {
