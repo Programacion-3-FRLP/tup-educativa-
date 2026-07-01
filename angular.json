@@ -8,7 +8,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "mi-proyecto": {
+    "tup-educativa-": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -59,10 +59,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "mi-proyecto:build:production"
+              "buildTarget": "tup-educativa-:build:production"
             },
             "development": {
-              "buildTarget": "mi-proyecto:build:development"
+              "buildTarget": "tup-educativa-:build:development"
             }
           },
           "defaultConfiguration": "development"
