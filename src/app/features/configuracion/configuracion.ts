@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, effect } from '@angular/core';
 import { Router } from '@angular/router';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
@@ -24,6 +24,14 @@ export class Configuracion {
 
   userAgent = '';
 
+  constructor() {
+    effect(() => {
+      if (!this.authService.user()) {
+        this.router.navigate(['/login']);
+      }
+    });
+  }
+
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
       this.userAgent = navigator.userAgent;
@@ -35,7 +43,9 @@ export class Configuracion {
   }
 
   async logout(): Promise<void> {
-    const mensajeConfirmacion = this.translocoService.translate('config.logoutConfirm');
+    const mensajeConfirmacion = this.translocoService.translate(
+      'config.logoutConfirm',
+    );
     const confirmacion = confirm(mensajeConfirmacion);
 
     if (!confirmacion) {
@@ -44,7 +54,6 @@ export class Configuracion {
 
     try {
       await this.authService.logout();
-      await this.router.navigate(['/login']);
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
     }
