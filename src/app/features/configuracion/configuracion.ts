@@ -33,12 +33,14 @@ export class Configuracion {
     }
   }
 
-  cambiarIdioma(idioma: string) {
-    this.translocoService.setActiveLang(idioma);
+  changeLanguage(language: string) {
+    this.translocoService.setActiveLang(language);
   }
 
   logout() {
-    const mensajeConfirmacion = this.translocoService.translate('config.logoutConfirm');
+    const mensajeConfirmacion = this.translocoService.translate(
+      'config.logoutConfirm',
+    );
     const confirmacion = confirm(mensajeConfirmacion);
 
     if (confirmacion) {
