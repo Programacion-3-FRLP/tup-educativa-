@@ -30,8 +30,8 @@ export class App {
     return this.router.url !== '/login' && this.router.url !== '/';
   }
 
-  changeLanguage(language: string): void {
-    this.translocoService.setActiveLang(language);
+  cambiarIdioma(idioma: string): void {
+    this.translocoService.setActiveLang(idioma);
   }
 
   abrirInfo(): void {
