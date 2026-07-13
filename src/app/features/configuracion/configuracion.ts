@@ -1,11 +1,13 @@
-import { Component, inject } from '@angular/core';
-import { Router, RouterOutlet, RouterLink } from '@angular/router';
+import { Component, effect, inject } from '@angular/core';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
+
 import { StateManagerService } from '../../core/state-manager.service';
+import { AuthService } from '@core/auth.service';
 
 @Component({
   selector: 'app-configuracion',
@@ -26,15 +28,23 @@ export class Configuracion {
   private translocoService = inject(TranslocoService);
   private stateManager = inject(StateManagerService);
 
+  authService = inject(AuthService);
+
   userAgent = '';
 
-  // Al usar una función getter que ejecuta el Signal directo (), Angular
-  // actualiza el HTML automáticamente apenas cambia el estado en el servicio.
+  constructor() {
+    effect(() => {
+      if (!this.authService.user()) {
+        this.router.navigate(['/login']);
+      }
+    });
+  }
+
   get user() {
     return this.stateManager.user();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.userAgent = navigator.userAgent;
     }
@@ -44,19 +54,25 @@ export class Configuracion {
     return this.router.url === '/configuracion/cuenta';
   }
 
-  cambiarIdioma(idioma: string) {
+  cambiarIdioma(idioma: string): void {
     this.translocoService.setActiveLang(idioma);
   }
 
-  logout() {
+  async logout(): Promise<void> {
     const mensajeConfirmacion = this.translocoService.translate(
       'config.logoutConfirm',
     );
+
     const confirmacion = confirm(mensajeConfirmacion);
 
-    if (confirmacion) {
-      sessionStorage.removeItem('auth');
-      this.router.navigate(['/login']);
+    if (!confirmacion) {
+      return;
+    }
+
+    try {
+      await this.authService.logout();
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
     }
   }
 }
