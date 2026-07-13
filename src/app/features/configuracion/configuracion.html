@@ -1,12 +1,43 @@
 <div *transloco="let t">
   <h1>{{ t('config.title') }}</h1>
 
+  @if (authService.user(); as user) {
   <div class="user-card">
-    <img [src]="user.image" [alt]="t('config.profilePhotoAlt')" width="100" />
+    @if (user.photoURL) {
+    <img
+      [src]="user.photoURL"
+      [alt]="t('config.profilePhotoAlt')"
+      width="100"
+      (error)="$any($event.target).src = '/logo.png'"
+    />
+    } @else {
+    <img src="/logo.png" [alt]="t('config.profilePhotoAlt')" width="100" />
+    }
 
-    <p>{{ t('config.name') }}: {{ user.name }}</p>
+    <p>{{ t('config.name') }}: {{ user.displayName }}</p>
     <p>{{ t('config.email') }}: {{ user.email }}</p>
-    <p>{{ t('config.role') }}: {{ user.role }}</p>
+    <p>UID: {{ user.uid }}</p>
+  </div>
+  } @else {
+  <p>No hay usuario autenticado.</p>
+  }
+
+  <button (click)="logout()">{{ t('config.logout') }}</button>
+
+  <hr />
+
+  <div class="app-info">
+    <h3>{{ t('config.appInfo') }}</h3>
+
+    <img src="/logo.png" [alt]="t('login.logoAlt')" width="80" />
+
+    <p>{{ t('config.name') }}: EducActiva</p>
+    <p>{{ t('config.version') }}: 1.0.0</p>
+
+    <p>
+      <strong>{{ t('config.userAgent') }}:</strong>
+    </p>
+    <p>{{ userAgent }}</p>
   </div>
 
   <button (click)="logout()">{{ t('config.logout') }}</button>
