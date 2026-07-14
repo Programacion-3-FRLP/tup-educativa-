@@ -1,103 +1,88 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { Api } from '../../core/api';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { TranslocoModule } from '@jsverse/transloco';
+import { StateManagerService } from '../../core/state-manager.service';
+
+type SortField = 'name' | 'age';
 
 @Component({
   selector: 'app-items',
-  standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, TranslocoModule],
   templateUrl: './items.html',
   styleUrl: './items.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Items implements OnInit {
-  private platformId = inject(PLATFORM_ID);
-  private api = inject(Api);
+  private readonly stateManager = inject(StateManagerService);
 
-  items: any[] = [];
-  filteredItems: any[] = [];
+  readonly items = this.stateManager.items;
+  readonly loading = this.stateManager.loading;
+  readonly hasError = this.stateManager.hasError;
 
-  searchText = '';
-  loading = true;
-  sortAsc = true;
-  errorMessage = '';
+  readonly searchText = signal('');
+  readonly sortField = signal<SortField>('name');
+  readonly sortAscending = signal(true);
 
-  ngOnInit() {
-  if (!isPlatformBrowser(this.platformId)) {
-    this.loading = false;
-    return;
-  }
+  readonly filteredItems = computed(() => {
+    const text = this.searchText().trim().toLowerCase();
 
-  const data = localStorage.getItem('items');
-  const timestamp = localStorage.getItem('items_timestamp');
-  const now = Date.now();
-
-  if (data && timestamp && now - Number(timestamp) < 300000) {
-    this.items = JSON.parse(data);
-    this.filteredItems = [...this.items];
-    this.loading = false;
-    return;
-  }
-
-  this.api.getItems().subscribe({
-    next: (res: any) => {
-      this.items = res.results;
-      this.filteredItems = [...this.items];
-
-      localStorage.setItem('items', JSON.stringify(this.items));
-      localStorage.setItem('items_timestamp', now.toString());
-
-      this.loading = false;
-    },
-    error: (err: any) => {
-      console.error(err);
-      this.errorMessage = 'Ocurrió un problema al obtener los alumnos.';
-      this.loading = false;
-    },
-  });
-}
-
-  filterItems() {
-    const text = this.searchText.toLowerCase();
-
-    this.filteredItems = this.items.filter(item => {
+    const filtered = this.items().filter((item) => {
       const fullName = `${item.name.first} ${item.name.last}`.toLowerCase();
-      const email = item.email.toLowerCase();
-      const country = item.location.country.toLowerCase();
-      const state = item.location.state.toLowerCase();
-      const city = item.location.city.toLowerCase();
 
       return (
         fullName.includes(text) ||
-        email.includes(text) ||
-        country.includes(text) ||
-        state.includes(text) ||
-        city.includes(text)
+        item.email.toLowerCase().includes(text) ||
+        item.location.country.toLowerCase().includes(text) ||
+        item.location.state.toLowerCase().includes(text) ||
+        item.location.city.toLowerCase().includes(text)
       );
     });
+
+    return filtered.sort((first, second) => {
+      const direction = this.sortAscending() ? 1 : -1;
+
+      if (this.sortField() === 'age') {
+        return (first.dob.age - second.dob.age) * direction;
+      }
+
+      return first.name.first.localeCompare(second.name.first) * direction;
+    });
+  });
+
+  ngOnInit(): void {
+    this.stateManager.loadItems();
   }
 
-  sortByName() {
-    this.sortAsc = !this.sortAsc;
-
-    this.filteredItems.sort((a, b) => {
-      const nameA = a.name.first.toLowerCase();
-      const nameB = b.name.first.toLowerCase();
-
-      if (nameA < nameB) return this.sortAsc ? -1 : 1;
-      if (nameA > nameB) return this.sortAsc ? 1 : -1;
-      return 0;
-    });
+  updateSearchText(value: string): void {
+    this.searchText.set(value);
   }
 
-  sortByAge() {
-    this.sortAsc = !this.sortAsc;
+  sortByName(): void {
+    this.changeSorting('name');
+  }
 
-    this.filteredItems.sort((a, b) => {
-      return this.sortAsc
-        ? a.dob.age - b.dob.age
-        : b.dob.age - a.dob.age;
-    });
+  sortByAge(): void {
+    this.changeSorting('age');
+  }
+
+  refreshItems(): void {
+    this.stateManager.refreshItems();
+  }
+
+  private changeSorting(field: SortField): void {
+    if (this.sortField() === field) {
+      this.sortAscending.update((ascending) => !ascending);
+      return;
+    }
+
+    this.sortField.set(field);
+    this.sortAscending.set(true);
   }
 }

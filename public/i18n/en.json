@@ -1,0 +1,32 @@
+{
+  "login": {
+    "logoAlt": "Application logo",
+    "title": "Login",
+    "loading": "Verifying...",
+    "submit": "Login"
+  },
+  "students": {
+    "title": "Students",
+    "statusLoading": "Loading students...",
+    "searchPlaceholder": "Search by name, email or location...",
+    "sortByName": "Sort by name",
+    "sortByAge": "Sort by age",
+    "photoAlt": "Student photo",
+    "email": "Email",
+    "age": "Age",
+    "phone": "Phone",
+    "errorLoad": "A problem occurred while retrieving students."
+  },
+  "config": {
+    "title": "Settings",
+    "profilePhotoAlt": "Profile picture",
+    "name": "Name",
+    "email": "Email",
+    "role": "Role",
+    "logout": "Log out",
+    "logoutConfirm": "Are you sure you want to log out?",
+    "appInfo": "App Information",
+    "version": "Version",
+    "userAgent": "User Agent"
+  }
+}

@@ -1,5 +1,32 @@
 {
-  "TITULO_APP": "Mi Aplicación Educativa",
-  "BIENVENIDA": "Hola, bienvenido al sistema de aprendizaje",
-  "BOTON_BUSCAR": "Buscar contenido"
+  "login": {
+    "logoAlt": "Logo de la aplicación",
+    "title": "Iniciar sesión",
+    "loading": "Verificando...",
+    "submit": "Iniciar sesión"
+  },
+  "students": {
+    "title": "Alumnos",
+    "statusLoading": "Cargando alumnos...",
+    "searchPlaceholder": "Buscar por nombre, email o ubicación...",
+    "sortByName": "Ordenar por nombre",
+    "sortByAge": "Ordenar por edad",
+    "photoAlt": "Foto del alumno",
+    "email": "Email",
+    "age": "Edad",
+    "phone": "Teléfono",
+    "errorLoad": "Ocurrió un problema al obtener los alumnos."
+  },
+  "config": {
+    "title": "Configuración",
+    "profilePhotoAlt": "Foto de perfil",
+    "name": "Nombre",
+    "email": "Email",
+    "role": "Rol",
+    "logout": "Cerrar sesión",
+    "logoutConfirm": "¿Seguro que querés cerrar sesión?",
+    "appInfo": "Información de la app",
+    "version": "Versión",
+    "userAgent": "User Agent"
+  }
 }
