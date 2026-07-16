@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import * as Sentry from '@sentry/angular';
 import { AnalyticsService } from '../../core/analytics.service';
+import { AuthService } from '../../core/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -15,29 +16,32 @@ export class Login {
 
   constructor(
     private router: Router,
-    private analyticsService: AnalyticsService
+    private analyticsService: AnalyticsService,
+    private authService: AuthService
   ) {}
 
-  login() {
+  async login(): Promise<void> {
     this.loading = true;
 
-    setTimeout(() => {
-      const email = 'usuario.prueba@educactiva.com';
+    try {
+      await this.authService.loginWithGoogle();
+      await this.authService.waitForAuthState();
 
-      sessionStorage.setItem('auth', 'true');
-      sessionStorage.setItem('userEmail', email);
-
-      this.analyticsService.logLogin(email);
-
-      Sentry.setUser({
-        email,
-      });
-
-      Sentry.captureException(
-        new Error(`Error forzado luego del login. Usuario: ${email}`)
-      );
-
-      this.router.navigate(['/items']);
-    }, 2000);
+      if (this.authService.isAuthenticated()) {
+        sessionStorage.setItem('auth', 'true');
+        
+        const user = this.authService.user();
+        if (user && user.email) {
+          sessionStorage.setItem('userEmail', user.email);
+          this.analyticsService.logLogin(user.email);
+          Sentry.setUser({ email: user.email });
+        }
+        
+        await this.router.navigate(['/items']);
+      }
+    } catch (error) {
+      console.error('Error al iniciar sesión con Google', error);
+      this.loading = false;
+    }
   }
 }
