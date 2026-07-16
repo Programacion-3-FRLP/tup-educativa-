@@ -4,6 +4,7 @@ import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 import { AuthService } from '../../core/auth.service';
+import { AnalyticsService } from '../../core/analytics.service';
 
 @Component({
   selector: 'app-configuracion',
@@ -16,6 +17,7 @@ export class Configuracion {
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
   authService = inject(AuthService);
+  private analyticsService = inject(AnalyticsService);
 
   userAgent = '';
 
@@ -40,6 +42,7 @@ export class Configuracion {
     }
 
     try {
+      this.analyticsService.logLogout();
       await this.authService.logout();
       await this.router.navigate(['/login']);
     } catch (error) {

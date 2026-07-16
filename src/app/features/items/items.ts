@@ -3,6 +3,7 @@ import { Api } from '../../core/api';
 import { FormsModule } from '@angular/forms';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { AnalyticsService } from '../../core/analytics.service';
 
 @Component({
   selector: 'app-items',
@@ -14,6 +15,7 @@ import { isPlatformBrowser } from '@angular/common';
 export class Items implements OnInit {
   private platformId = inject(PLATFORM_ID);
   private api = inject(Api);
+  private analytics = inject(AnalyticsService);
 
   items: any[] = [];
   filteredItems: any[] = [];
@@ -24,42 +26,46 @@ export class Items implements OnInit {
   errorMessage = '';
 
   ngOnInit() {
-  if (!isPlatformBrowser(this.platformId)) {
-    this.loading = false;
-    return;
-  }
+    if (!isPlatformBrowser(this.platformId)) {
+      this.loading = false;
+      return;
+    }
 
-  const data = localStorage.getItem('items');
-  const timestamp = localStorage.getItem('items_timestamp');
-  const now = Date.now();
+    const data = localStorage.getItem('items');
+    const timestamp = localStorage.getItem('items_timestamp');
+    const now = Date.now();
 
-  if (data && timestamp && now - Number(timestamp) < 300000) {
-    this.items = JSON.parse(data);
-    this.filteredItems = [...this.items];
-    this.loading = false;
-    return;
-  }
-
-  this.api.getItems().subscribe({
-    next: (res: any) => {
-      this.items = res.results;
+    if (data && timestamp && now - Number(timestamp) < 300000) {
+      this.items = JSON.parse(data);
       this.filteredItems = [...this.items];
-
-      localStorage.setItem('items', JSON.stringify(this.items));
-      localStorage.setItem('items_timestamp', now.toString());
-
       this.loading = false;
-    },
-    error: (err: any) => {
-      console.error(err);
-      this.errorMessage = 'Ocurrió un problema al obtener los alumnos.';
-      this.loading = false;
-    },
-  });
-}
+      return;
+    }
+
+    this.api.getItems().subscribe({
+      next: (res: any) => {
+        this.items = res.results;
+        this.filteredItems = [...this.items];
+
+        localStorage.setItem('items', JSON.stringify(this.items));
+        localStorage.setItem('items_timestamp', now.toString());
+
+        this.loading = false;
+      },
+      error: (err: any) => {
+        console.error(err);
+        this.errorMessage = 'Ocurrió un problema al obtener los alumnos.';
+        this.loading = false;
+      },
+    });
+  }
 
   filterItems() {
     const text = this.searchText.toLowerCase();
+
+    if (text.trim()) {
+      this.analytics.logSearch(text.trim());
+    }
 
     this.filteredItems = this.items.filter(item => {
       const fullName = `${item.name.first} ${item.name.last}`.toLowerCase();
@@ -80,6 +86,7 @@ export class Items implements OnInit {
 
   sortByName() {
     this.sortAsc = !this.sortAsc;
+    this.analytics.logSorting('name', this.sortAsc);
 
     this.filteredItems.sort((a, b) => {
       const nameA = a.name.first.toLowerCase();
@@ -93,6 +100,7 @@ export class Items implements OnInit {
 
   sortByAge() {
     this.sortAsc = !this.sortAsc;
+    this.analytics.logSorting('age', this.sortAsc);
 
     this.filteredItems.sort((a, b) => {
       return this.sortAsc

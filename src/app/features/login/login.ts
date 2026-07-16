@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import * as Sentry from '@sentry/angular';
+import { AnalyticsService } from '../../core/analytics.service';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +13,10 @@ import * as Sentry from '@sentry/angular';
 export class Login {
   loading = false;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private analyticsService: AnalyticsService
+  ) {}
 
   login() {
     this.loading = true;
@@ -22,6 +26,8 @@ export class Login {
 
       sessionStorage.setItem('auth', 'true');
       sessionStorage.setItem('userEmail', email);
+
+      this.analyticsService.logLogin(email);
 
       Sentry.setUser({
         email,
