@@ -4,7 +4,9 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:desktop": "tauri dev",
     "build": "ng build",
+    "build:desktop": "tauri build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
@@ -35,6 +37,8 @@
     "@angular/cli": "^21.2.7",
     "@angular/compiler-cli": "^21.2.0",
     "@eslint/js": "^9.39.4",
+    "@tauri-apps/api": "^2.11.1",
+    "@tauri-apps/cli": "^2.11.4",
     "@types/node": "^20.17.19",
     "angular-eslint": "21.4.0",
     "eslint": "^9.39.4",
@@ -42,7 +46,8 @@
     "lint-staged": "^17.0.5",
     "prettier": "^3.8.3",
     "typescript": "~5.9.2",
-    "typescript-eslint": "8.59.2"
+    "typescript-eslint": "8.59.2",
+    "vitest": "^4.1.10"
   },
   "lint-staged": {
     "*.{ts,html,css,scss,json,md}": [
