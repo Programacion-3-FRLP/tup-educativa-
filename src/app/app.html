@@ -11,9 +11,11 @@
 
   <div class="main-container">
     <nav class="sidebar">
-      <button routerLink="/items" class="sidebar-btn">Alumnos</button>
+      <button routerLink="/items" class="sidebar-btn">
+        {{ 'sidebar.students' | transloco }}
+      </button>
       <button routerLink="/configuracion" class="sidebar-btn">
-        Configuración
+        {{ 'sidebar.settings' | transloco }}
       </button>
     </nav>
 
