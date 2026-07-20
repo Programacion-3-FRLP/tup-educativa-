@@ -10,19 +10,19 @@
         class="profile-img"
       />
 
-      <div class="input-group">
-        <label>Nombre</label>
-        <input type="text" formControlName="name" />
+      <div class="static-field">
+        <span class="static-field-label">Nombre:</span>
+        <span class="static-field-value">{{ user.name }}</span>
       </div>
 
-      <div class="input-group">
-        <label>Email</label>
-        <input type="email" formControlName="email" />
+      <div class="static-field">
+        <span class="static-field-label">Email:</span>
+        <span class="static-field-value">{{ user.email }}</span>
       </div>
 
-      <div class="input-group">
-        <label>Rol</label>
-        <input type="text" formControlName="role" />
+      <div class="static-field">
+        <span class="static-field-label">Rol:</span>
+        <span class="static-field-value">{{ user.role }}</span>
       </div>
     </div>
 
@@ -35,6 +35,7 @@
           id="fechaNacimiento"
           type="date"
           formControlName="fechaNacimiento"
+          [max]="fechaActual"
         />
       </div>
 
@@ -59,7 +60,9 @@
               type="tel"
               inputmode="numeric"
               pattern="[0-9]*"
-              (keypress)="($event.charCode >= 48 && $event.charCode <= 57)"
+              (keypress)="
+                  $event.charCode >= 48 && $event.charCode <= 57
+                "
               placeholder="Número de teléfono"
             />
 
@@ -67,6 +70,7 @@
               type="button"
               class="remove-btn"
               (click)="removerTelefono($index)"
+              aria-label="Eliminar teléfono"
             >
               ✕
             </button>
@@ -84,6 +88,7 @@
       <button type="button" class="cancel-btn" (click)="cancelar()">
         Cancelar
       </button>
+
       <button type="submit" class="save-btn" [disabled]="cuentaForm.invalid">
         Guardar
       </button>
