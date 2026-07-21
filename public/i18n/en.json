@@ -28,5 +28,9 @@
     "appInfo": "App Information",
     "version": "Version",
     "userAgent": "User Agent"
+  },
+  "sidebar": {
+    "students": "Students",
+    "settings": "Settings"
   }
 }

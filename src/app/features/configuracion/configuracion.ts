@@ -38,8 +38,8 @@ export class Configuracion {
     }
   }
 
-  cambiarIdioma(idioma: string) {
-    this.translocoService.setActiveLang(idioma);
+  changeLanguage(language: string) {
+    this.translocoService.setActiveLang(language);
   }
 
   async logout(): Promise<void> {
