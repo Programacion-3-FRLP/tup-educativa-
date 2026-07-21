@@ -2,9 +2,9 @@
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "tup-educativa-desktop",
   "version": "0.1.0",
-  "identifier": "com.tauri.dev",
+  "identifier": "com.educactiva.app",
   "build": {
-    "frontendDist": "../dist/mi-proyecto/browser",
+    "frontendDist": "../dist/tup-educativa-/browser",
     "devUrl": "http://localhost:4200",
     "beforeDevCommand": "npm run start",
     "beforeBuildCommand": "npm run build"
