@@ -1,0 +1,14 @@
+{
+  "ci": {
+    "collect": {
+      "staticDistDir": "./dist/mi-proyecto/browser",
+      "numberOfRuns": 1,
+      "settings": {
+        "chromeFlags": "--headless=new --disable-gpu"
+      }
+    },
+    "upload": {
+      "target": "temporary-public-storage"
+    }
+  }
+}
