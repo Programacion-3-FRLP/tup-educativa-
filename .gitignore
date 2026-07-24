@@ -1,3 +1,4 @@
-node_modules
+node_modules/
+dist/
 .angular/
-/dist
+frontend/src-tauri/target/
