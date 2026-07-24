@@ -3,5 +3,5 @@ services:
     name: tup-educativa-backend
     env: node
     rootDir: backend
-    buildCommand: npm install && npm run build
+    buildCommand: npm install --include=dev && npm run build
     startCommand: npm start
