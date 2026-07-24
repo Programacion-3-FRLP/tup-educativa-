@@ -23,6 +23,8 @@ let items: Item[] = [
 
 let nextId = 3;
 
+
+
 // 1. GET: obtener todos los items
 app.get('/items', (req: Request, res: Response) => {
     res.json(items);
