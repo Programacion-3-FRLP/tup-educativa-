@@ -2,3 +2,6 @@ node_modules/
 dist/
 .angular/
 frontend/src-tauri/target/
+frontend/android/**/build/
+frontend/android/**/*.bin
+frontend/android/**/*.jar
