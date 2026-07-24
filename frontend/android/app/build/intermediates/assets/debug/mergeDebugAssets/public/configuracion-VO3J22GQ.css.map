@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/features/configuracion/configuracion.css"],
-  "sourcesContent": [".user-card,\n.app-info {\n  max-width: 35rem;\n  padding: 1rem;\n  margin-bottom: 1rem;\n  border: 0.0625rem solid #ddd;\n  border-radius: 1rem;\n}\n\nimg {\n  border-radius: 50%;\n  margin-bottom: 1rem;\n}\n\nbutton {\n  padding: 0.75rem 1rem;\n  cursor: pointer;\n  margin-bottom: 1rem;\n}"],
-  "mappings": "AAAA,CAAC,UACD,CAAC,SACC,UAAW,MAFb,QAGW,KACT,cAAe,KACf,OAAQ,SAAU,MAAM,KAL1B,cAMiB,IACjB,CAEA,IATA,cAUiB,IACf,cAAe,IACjB,CAEA,OAdA,QAeW,OAAQ,KACjB,OAAQ,QACR,cAAe,IACjB",
-  "names": []
-}
