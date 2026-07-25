@@ -1,0 +1,97 @@
+<div class="cuenta-container">
+  <h2>Editar Información del Usuario</h2>
+
+  <form [formGroup]="cuentaForm" (ngSubmit)="guardar()">
+    <div class="user-card-static">
+      <img
+        [src]="user.image"
+        alt="Foto de perfil"
+        width="100"
+        class="profile-img"
+      />
+
+      <div class="static-field">
+        <span class="static-field-label">Nombre:</span>
+        <span class="static-field-value">{{ user.name }}</span>
+      </div>
+
+      <div class="static-field">
+        <span class="static-field-label">Email:</span>
+        <span class="static-field-value">{{ user.email }}</span>
+      </div>
+
+      <div class="static-field">
+        <span class="static-field-label">Rol:</span>
+        <span class="static-field-value">{{ user.role }}</span>
+      </div>
+    </div>
+
+    <hr />
+
+    <div class="editable-section">
+      <div class="input-group">
+        <label for="fechaNacimiento">Fecha de Nacimiento</label>
+        <input
+          id="fechaNacimiento"
+          type="date"
+          formControlName="fechaNacimiento"
+          [max]="fechaActual"
+        />
+      </div>
+
+      <div class="input-group">
+        <label for="direccion">Dirección</label>
+        <input
+          id="direccion"
+          type="text"
+          formControlName="direccion"
+          placeholder="Calle, Número, Localidad"
+        />
+      </div>
+
+      <div class="telefonos-section">
+        <label>Teléfonos</label>
+
+        <div formArrayName="telefonos">
+          @for (tel of telefonos.controls; track tel) {
+          <div class="telefono-row">
+            <input
+              [formControlName]="$index"
+              type="tel"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              (keypress)="
+                  $event.charCode >= 48 && $event.charCode <= 57
+                "
+              placeholder="Número de teléfono"
+            />
+
+            <button
+              type="button"
+              class="remove-btn"
+              (click)="removerTelefono($index)"
+              aria-label="Eliminar teléfono"
+            >
+              ✕
+            </button>
+          </div>
+          }
+        </div>
+
+        <button type="button" class="add-btn" (click)="agregarTelefono()">
+          + Agregar Teléfono
+        </button>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="cancel-btn" (click)="cancelar()">
+        Cancelar
+      </button>
+
+      <button type="submit" class="save-btn" [disabled]="cuentaForm.invalid">
+        Guardar
+      </button>
+    </div>
+  </form>
+</div>

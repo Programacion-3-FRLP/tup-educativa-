@@ -1,0 +1,13 @@
+.static-field {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+
+.static-field-label {
+  font-weight: 600;
+}
+
+.static-field-value {
+  overflow-wrap: anywhere;
+}
