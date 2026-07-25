@@ -9,31 +9,30 @@ app.use(cors());
 app.use(express.json());
 
 // Base de datos simulada en memoria local
-interface Item {
-    id: number;
-    name: string;
-    description: string;
-    active: boolean;
+let items: any[] = [];
+
+// Al iniciar el proyecto se debe realizar un GET general para obtener todos los elementos posibles
+async function initDB() {
+    try {
+        const response = await fetch('https://randomuser.me/api/?results=10');
+        const data = await response.json();
+        items = data.results;
+        console.log(`Base de datos inicializada con ${items.length} elementos desde randomuser.me`);
+    } catch (error) {
+        console.error('Error al inicializar la base de datos:', error);
+    }
 }
-
-let items: Item[] = [
-    { id: 1, name: "Elemento 1", description: "Descripción del elemento 1", active: true },
-    { id: 2, name: "Elemento 2", description: "Descripción del elemento 2", active: false }
-];
-
-let nextId = 3;
-
-
+initDB();
 
 // 1. GET: obtener todos los items
 app.get('/items', (req: Request, res: Response) => {
-    res.json(items);
+    res.json({ results: items });
 });
 
 // 2. GET: obtener un único elemento por id
 app.get('/items/:id', (req: Request, res: Response) => {
-    const id = parseInt(req.params.id);
-    const item = items.find(i => i.id === id);
+    const id = req.params.id;
+    const item = items.find(i => i.login.uuid === id);
     if (!item) {
         return res.status(404).json({ message: "Item no encontrado" });
     }
@@ -42,53 +41,52 @@ app.get('/items/:id', (req: Request, res: Response) => {
 
 // 3. POST: agregar un elemento a la lista
 app.post('/items', (req: Request, res: Response) => {
-    const { name, description, active } = req.body;
-    const newItem: Item = {
-        id: nextId++,
-        name: name || "Sin nombre",
-        description: description || "Sin descripción",
-        active: active !== undefined ? active : true
-    };
+    const newItem = req.body;
+    // Si no tiene uuid, le asignamos uno aleatorio simulado
+    if (!newItem.login) newItem.login = {};
+    if (!newItem.login.uuid) {
+        newItem.login.uuid = Math.random().toString(36).substring(2, 15);
+    }
     items.push(newItem);
     res.status(201).json(newItem);
 });
 
 // 4. PUT: reemplazar completamente un elemento
 app.put('/items/:id', (req: Request, res: Response) => {
-    const id = parseInt(req.params.id);
-    const index = items.findIndex(i => i.id === id);
+    const id = req.params.id;
+    const index = items.findIndex(i => i.login.uuid === id);
     if (index === -1) {
         return res.status(404).json({ message: "Item no encontrado" });
     }
     
-    const { name, description, active } = req.body;
-    items[index] = { 
-        id, 
-        name: name || "", 
-        description: description || "", 
-        active: active !== undefined ? active : true 
-    };
+    items[index] = { ...req.body };
+    // Asegurar que el id no cambie
+    if (!items[index].login) items[index].login = {};
+    items[index].login.uuid = id;
+    
     res.json(items[index]);
 });
 
 // 5. PATCH: editar solo una propiedad de un elemento
 app.patch('/items/:id', (req: Request, res: Response) => {
-    const id = parseInt(req.params.id);
-    const index = items.findIndex(i => i.id === id);
+    const id = req.params.id;
+    const index = items.findIndex(i => i.login.uuid === id);
     if (index === -1) {
         return res.status(404).json({ message: "Item no encontrado" });
     }
     
-    // Se actualizan solo las propiedades enviadas en el body
-    const updates = req.body;
-    items[index] = { ...items[index], ...updates };
+    items[index] = { ...items[index], ...req.body };
+    // Asegurar que el id no cambie
+    if (!items[index].login) items[index].login = {};
+    items[index].login.uuid = id;
+    
     res.json(items[index]);
 });
 
 // 6. DELETE: eliminar un elemento
 app.delete('/items/:id', (req: Request, res: Response) => {
-    const id = parseInt(req.params.id);
-    const index = items.findIndex(i => i.id === id);
+    const id = req.params.id;
+    const index = items.findIndex(i => i.login.uuid === id);
     if (index === -1) {
         return res.status(404).json({ message: "Item no encontrado" });
     }
