@@ -1,24 +1,17 @@
-import { Component, effect, inject } from '@angular/core';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { Component, inject, effect } from '@angular/core';
+import { Router } from '@angular/router';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 
-import { StateManagerService } from '../../core/state-manager.service';
 import { AuthService } from '@core/auth.service';
 
 @Component({
   selector: 'app-configuracion',
   standalone: true,
-  imports: [
-    TranslocoModule,
-    MatButtonModule,
-    MatMenuModule,
-    RouterOutlet,
-    RouterLink,
-  ],
+  imports: [TranslocoModule, MatButtonModule, MatMenuModule],
   templateUrl: './configuracion.html',
   styleUrl: './configuracion.css',
 })
@@ -26,7 +19,6 @@ export class Configuracion {
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
   private translocoService = inject(TranslocoService);
-  private stateManager = inject(StateManagerService);
 
   authService = inject(AuthService);
 
@@ -40,29 +32,20 @@ export class Configuracion {
     });
   }
 
-  get user() {
-    return this.stateManager.user();
-  }
-
-  ngOnInit(): void {
+  ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
       this.userAgent = navigator.userAgent;
     }
   }
 
-  enRutaCuenta(): boolean {
-    return this.router.url === '/configuracion/cuenta';
-  }
-
-  cambiarIdioma(idioma: string): void {
-    this.translocoService.setActiveLang(idioma);
+  changeLanguage(language: string) {
+    this.translocoService.setActiveLang(language);
   }
 
   async logout(): Promise<void> {
     const mensajeConfirmacion = this.translocoService.translate(
       'config.logoutConfirm',
     );
-
     const confirmacion = confirm(mensajeConfirmacion);
 
     if (!confirmacion) {

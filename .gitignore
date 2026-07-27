@@ -1,5 +1,7 @@
-node_modules
+node_modules/
+dist/
 .angular/
-/dist
-src-tauri/target/
-/android
+frontend/src-tauri/target/
+frontend/android/**/build/
+frontend/android/**/*.bin
+frontend/android/**/*.jar
