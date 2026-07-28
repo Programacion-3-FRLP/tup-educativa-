@@ -1,0 +1,135 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  background: #f8f9fa;
+  border-bottom: 0.0625rem solid #e0e0e0;
+}
+
+.header-logo {
+  font-weight: bold;
+  font-size: 1.125rem;
+}
+
+.language-selection {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.language-selection button {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+}
+
+.language-selection button:hover {
+  color: #0056b3;
+}
+
+.separator {
+  color: #6c757d;
+  font-size: 1rem;
+}
+
+.main-container {
+  display: flex;
+  flex: 1;
+}
+
+.sidebar {
+  width: 14rem;
+  background: #eee;
+  padding: 1.25rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sidebar-btn {
+  display: block;
+  width: 100%;
+  padding: 0.875rem 1rem;
+  font-size: 1.125rem;
+  text-align: center;
+  background: #fff;
+  border: 0.0625rem solid #ccc;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sidebar-btn:hover {
+  background: #e2e2e2;
+}
+
+.content {
+  flex: 1;
+  padding: 1.25rem;
+  overflow-y: auto;
+}
+
+.bottom-bar {
+  display: none;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  margin-bottom: 1 rem;
+}
+
+.info-btn {
+  display: block;
+  width: 100%;
+  padding: 0.875rem 1rem;
+  font-size: 1.125rem;
+  text-align: center;
+  background: #fff;
+  border: 0.0625rem solid #ccc;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-sizing: border-box;
+}
+
+@media (max-width: 48rem) {
+  .main-container {
+    flex-direction: column;
+    height: auto;
+    overflow: visible;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .content {
+    overflow-y: visible;
+    padding-bottom: 5rem;
+  }
+
+  .bottom-bar {
+    display: flex;
+    justify-content: space-around;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: #ddd;
+    padding: 0.875rem 1rem;
+    z-index: 10;
+  }
+
+  .content {
+    padding-bottom: 4rem;
+  }
+}

@@ -1,10 +1,7 @@
-node_modules
-.angular/
-.lighthouseci/
-.DS_Store
-reports/lighthouse/*.json
-
-/dist
+node_modules/
 dist/
-# Sentry Config File
-.sentryclirc
+.angular/
+frontend/src-tauri/target/
+frontend/android/**/build/
+frontend/android/**/*.bin
+frontend/android/**/*.jar

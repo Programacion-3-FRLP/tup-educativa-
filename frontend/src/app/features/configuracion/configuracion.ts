@@ -1,0 +1,81 @@
+import { Component, effect, inject } from '@angular/core';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
+import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+
+import { StateManagerService } from '../../core/state-manager.service';
+import { AuthService } from '@core/auth.service';
+import { AnalyticsService } from '@core/analytics.service';
+
+@Component({
+  selector: 'app-configuracion',
+  standalone: true,
+  imports: [
+    TranslocoModule,
+    MatButtonModule,
+    MatMenuModule,
+    RouterOutlet,
+    RouterLink,
+  ],
+  templateUrl: './configuracion.html',
+  styleUrl: './configuracion.css',
+})
+export class Configuracion {
+  private router = inject(Router);
+  private platformId = inject(PLATFORM_ID);
+  private translocoService = inject(TranslocoService);
+  private stateManager = inject(StateManagerService);
+  private analyticsService = inject(AnalyticsService);
+
+  authService = inject(AuthService);
+
+  userAgent = '';
+
+  constructor() {
+    effect(() => {
+      if (!this.authService.user()) {
+        this.router.navigate(['/login']);
+      }
+    });
+  }
+
+  get user() {
+    return this.stateManager.user();
+  }
+
+  ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.userAgent = navigator.userAgent;
+    }
+  }
+
+  enRutaCuenta(): boolean {
+    return this.router.url === '/configuracion/cuenta';
+  }
+
+  cambiarIdioma(idioma: string): void {
+    this.translocoService.setActiveLang(idioma);
+  }
+
+  async logout(): Promise<void> {
+    const mensajeConfirmacion = this.translocoService.translate(
+      'config.logoutConfirm',
+    );
+
+    const confirmacion = confirm(mensajeConfirmacion);
+
+    if (!confirmacion) {
+      return;
+    }
+
+    try {
+      this.analyticsService.logLogout();
+      await this.authService.logout();
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+    }
+  }
+}

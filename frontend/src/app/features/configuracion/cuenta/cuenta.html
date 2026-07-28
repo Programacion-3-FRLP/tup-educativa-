@@ -1,0 +1,89 @@
+<div class="cuenta-container">
+  <h2>Editar Información del Usuario</h2>
+
+  <form [formGroup]="cuentaForm" (ngSubmit)="guardar()">
+    <div class="user-card-static">
+      <img
+        [src]="user.image"
+        alt="Foto de perfil"
+        width="100"
+        class="profile-img"
+      />
+
+      <div class="input-group">
+        <label>Nombre</label>
+        <input type="text" formControlName="name" />
+      </div>
+
+      <div class="input-group">
+        <label>Email</label>
+        <input type="email" formControlName="email" />
+      </div>
+
+      <div class="input-group">
+        <label>Rol</label>
+        <input type="text" formControlName="role" />
+      </div>
+    </div>
+
+    <hr />
+
+    <div class="editable-section">
+      <div class="input-group">
+        <label for="fechaNacimiento">Fecha de Nacimiento</label>
+        <input
+          id="fechaNacimiento"
+          type="date"
+          formControlName="fechaNacimiento"
+        />
+      </div>
+
+      <div class="input-group">
+        <label for="direccion">Dirección</label>
+        <input
+          id="direccion"
+          type="text"
+          formControlName="direccion"
+          placeholder="Calle, Número, Localidad"
+        />
+      </div>
+
+      <div class="telefonos-section">
+        <label>Teléfonos</label>
+
+        <div formArrayName="telefonos">
+          @for (tel of telefonos.controls; track $index) {
+          <div class="telefono-row">
+            <input
+              [formControlName]="$index"
+              type="tel"
+              placeholder="Número de teléfono"
+            />
+
+            @if (telefonos.length > 1) {
+            <button
+              type="button"
+              class="remove-btn"
+              (click)="removerTelefono($index)"
+            >
+              ✕
+            </button>
+            }
+          </div>
+          }
+        </div>
+
+        <button type="button" class="add-btn" (click)="agregarTelefono()">
+          + Agregar Teléfono
+        </button>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="cancel-btn" (click)="cancelar()">
+        Cancelar
+      </button>
+      <button type="submit" class="save-btn">Guardar</button>
+    </div>
+  </form>
+</div>
