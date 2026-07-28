@@ -1,5 +1,8 @@
 node_modules
 .angular/
+.lighthouseci/
+.DS_Store
+reports/lighthouse/*.json
 
 /dist
 dist/

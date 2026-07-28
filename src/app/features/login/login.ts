@@ -35,13 +35,27 @@ export class Login {
           sessionStorage.setItem('userEmail', user.email);
           this.analyticsService.logLogin(user.email);
           Sentry.setUser({ email: user.email });
+          await this.router.navigate(['/items']);
+          this.reportForcedLoginError(user.email);
+          return;
         }
-        
+
         await this.router.navigate(['/items']);
       }
     } catch (error) {
       console.error('Error al iniciar sesión con Google', error);
       this.loading = false;
     }
+  }
+
+  private reportForcedLoginError(email: string): void {
+    Sentry.withScope((scope) => {
+      scope.setUser({ email });
+      scope.setTag('tp', '9');
+      scope.setContext('usuario_autenticado', { email });
+      Sentry.captureException(
+        new Error('TP9: error forzado luego del inicio de sesión')
+      );
+    });
   }
 }

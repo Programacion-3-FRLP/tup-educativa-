@@ -5,8 +5,12 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:stats": "ng build --stats-json",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "report:lighthouse": "npm run build && lhci autorun",
+    "report:bundle": "npm run build:stats && esbuild-visualizer --metadata ./dist/mi-proyecto/stats.json --filename ./reports/esbuild-visualizer.html --title \"EducActiva - Bundle Report\"",
+    "report:tp9": "npm run report:lighthouse && npm run report:bundle",
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org tup-nn --project javascript-angular ./dist && sentry-cli sourcemaps upload --org tup-nn --project javascript-angular ./dist"
   },
   "private": true,
@@ -31,7 +35,9 @@
     "@angular/build": "^21.2.7",
     "@angular/cli": "^21.2.7",
     "@angular/compiler-cli": "^21.2.0",
+    "@lhci/cli": "^0.15.1",
     "@types/node": "^20.17.19",
+    "esbuild-visualizer": "^0.7.0",
     "prettier": "^3.8.1",
     "typescript": "~5.9.2"
   }
