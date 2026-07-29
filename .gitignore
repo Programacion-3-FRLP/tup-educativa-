@@ -5,3 +5,4 @@ frontend/src-tauri/target/
 frontend/android/**/build/
 frontend/android/**/*.bin
 frontend/android/**/*.jar
+firebase-key.json
