@@ -1,7 +1,6 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
-import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs, getDoc, doc, setDoc, deleteDoc } from 'firebase/firestore';
+import * as admin from 'firebase-admin';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -10,24 +9,28 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-const firebaseConfig = {
-    apiKey: 'AIzaSyCMYA1dQ6HRTPj_5UeuH02W1dwfCCYzCWo',
-    authDomain: 'educactiva-a3a00.firebaseapp.com',
-    projectId: 'educactiva-a3a00',
-    storageBucket: 'educactiva-a3a00.firebasestorage.app',
-    messagingSenderId: '712323141237',
-    appId: '1:712323141237:web:444d7407f84066ebd8b23c',
-    measurementId: 'G-1MS0B9Z6V5',
-};
+let serviceAccount;
+try {
+    serviceAccount = require('../../firebase-key.json');
+} catch (error) {
+    console.warn('Advertencia: No se encontró firebase-key.json. Asegúrate de configurarlo correctamente.');
+}
 
-const firebaseApp = initializeApp(firebaseConfig);
-const db = getFirestore(firebaseApp);
-const itemsCol = collection(db, 'items');
+if (serviceAccount) {
+    admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount)
+    });
+} else {
+    admin.initializeApp();
+}
+
+const db = admin.firestore();
+const itemsCol = db.collection('items');
 
 // Al iniciar el proyecto se debe realizar un GET general para obtener todos los elementos posibles
 async function initDB() {
     try {
-        const snapshot = await getDocs(itemsCol);
+        const snapshot = await itemsCol.get();
         if (snapshot.empty) {
             console.log("Colección 'items' vacía. Inicializando desde randomuser.me...");
             const response = await fetch('https://randomuser.me/api/?results=10');
@@ -36,7 +39,7 @@ async function initDB() {
                 const id = user.login?.uuid || Math.random().toString(36).substring(2, 15);
                 if (!user.login) user.login = {};
                 user.login.uuid = id;
-                await setDoc(doc(db, 'items', id), user);
+                await itemsCol.doc(id).set(user);
             }
             console.log("Base de datos inicializada con éxito.");
         } else {
@@ -51,7 +54,7 @@ initDB();
 // 1. GET: obtener todos los items
 app.get('/items', async (req: Request, res: Response) => {
     try {
-        const snapshot = await getDocs(itemsCol);
+        const snapshot = await itemsCol.get();
         const results = snapshot.docs.map(doc => doc.data());
         res.json({ results });
     } catch (error) {
@@ -62,9 +65,9 @@ app.get('/items', async (req: Request, res: Response) => {
 // 2. GET: obtener un único elemento por id
 app.get('/items/:id', async (req: Request, res: Response) => {
     try {
-        const docRef = doc(db, 'items', req.params.id);
-        const docSnap = await getDoc(docRef);
-        if (!docSnap.exists()) {
+        const docRef = itemsCol.doc(req.params.id);
+        const docSnap = await docRef.get();
+        if (!docSnap.exists) {
             return res.status(404).json({ message: "Item no encontrado" });
         }
         res.json(docSnap.data());
@@ -81,7 +84,7 @@ app.post('/items', async (req: Request, res: Response) => {
         if (!newItem.login.uuid) {
             newItem.login.uuid = Math.random().toString(36).substring(2, 15);
         }
-        await setDoc(doc(db, 'items', newItem.login.uuid), newItem);
+        await itemsCol.doc(newItem.login.uuid).set(newItem);
         res.status(201).json(newItem);
     } catch (error) {
         res.status(500).json({ error: "Error al crear el item" });
@@ -96,12 +99,12 @@ app.put('/items/:id', async (req: Request, res: Response) => {
         if (!newItem.login) newItem.login = {};
         newItem.login.uuid = id;
         
-        const docRef = doc(db, 'items', id);
-        const docSnap = await getDoc(docRef);
-        if (!docSnap.exists()) {
+        const docRef = itemsCol.doc(id);
+        const docSnap = await docRef.get();
+        if (!docSnap.exists) {
             return res.status(404).json({ message: "Item no encontrado" });
         }
-        await setDoc(docRef, newItem);
+        await docRef.set(newItem);
         res.json(newItem);
     } catch (error) {
         res.status(500).json({ error: "Error al actualizar el item" });
@@ -112,16 +115,16 @@ app.put('/items/:id', async (req: Request, res: Response) => {
 app.patch('/items/:id', async (req: Request, res: Response) => {
     try {
         const id = req.params.id;
-        const docRef = doc(db, 'items', id);
-        const docSnap = await getDoc(docRef);
-        if (!docSnap.exists()) {
+        const docRef = itemsCol.doc(id);
+        const docSnap = await docRef.get();
+        if (!docSnap.exists) {
             return res.status(404).json({ message: "Item no encontrado" });
         }
         const updatedItem = { ...docSnap.data(), ...req.body };
         if (!updatedItem.login) updatedItem.login = {};
         updatedItem.login.uuid = id;
         
-        await setDoc(docRef, updatedItem);
+        await docRef.set(updatedItem);
         res.json(updatedItem);
     } catch (error) {
         res.status(500).json({ error: "Error al modificar el item" });
@@ -132,12 +135,12 @@ app.patch('/items/:id', async (req: Request, res: Response) => {
 app.delete('/items/:id', async (req: Request, res: Response) => {
     try {
         const id = req.params.id;
-        const docRef = doc(db, 'items', id);
-        const docSnap = await getDoc(docRef);
-        if (!docSnap.exists()) {
+        const docRef = itemsCol.doc(id);
+        const docSnap = await docRef.get();
+        if (!docSnap.exists) {
             return res.status(404).json({ message: "Item no encontrado" });
         }
-        await deleteDoc(docRef);
+        await docRef.delete();
         res.json({ message: "Item eliminado exitosamente" });
     } catch (error) {
         res.status(500).json({ error: "Error al eliminar el item" });
