@@ -14,7 +14,9 @@
     "lint": "ng lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "analyze:esbuild": "ng build --stats-json",
+    "analyze:lighthouse": "npx lighthouse http://localhost:4200 --view"
   },
   "private": true,
   "packageManager": "npm@11.12.1",
