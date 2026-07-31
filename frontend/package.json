@@ -16,7 +16,7 @@
     "format:check": "prettier --check .",
     "prepare": "husky",
     "analyze:esbuild": "ng build --stats-json",
-    "analyze:lighthouse": "npx lighthouse http://localhost:4200 --view"
+    "analyze:lighthouse": "npx -y lighthouse http://localhost:4200 --view"
   },
   "private": true,
   "packageManager": "npm@11.12.1",
