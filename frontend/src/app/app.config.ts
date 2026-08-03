@@ -1,9 +1,13 @@
+import * as Sentry from '@sentry/angular';
 import {
   ApplicationConfig,
+  ErrorHandler,
+  inject,
   isDevMode,
+  provideAppInitializer,
   provideZoneChangeDetection,
 } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideTransloco } from '@jsverse/transloco';
 import { provideServiceWorker } from '@angular/service-worker';
@@ -16,6 +20,20 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(),
+
+    {
+      provide: ErrorHandler,
+      useValue: Sentry.createErrorHandler(),
+    },
+
+    {
+      provide: Sentry.TraceService,
+      deps: [Router],
+    },
+
+    provideAppInitializer(() => {
+      inject(Sentry.TraceService);
+    }),
 
     provideTransloco({
       config: {

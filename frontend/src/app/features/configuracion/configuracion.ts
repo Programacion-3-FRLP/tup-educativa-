@@ -8,6 +8,7 @@ import { MatMenuModule } from '@angular/material/menu';
 
 import { StateManagerService } from '../../core/state-manager.service';
 import { AuthService } from '@core/auth.service';
+import { AnalyticsService } from '@core/analytics.service';
 
 @Component({
   selector: 'app-configuracion',
@@ -27,6 +28,7 @@ export class Configuracion {
   private platformId = inject(PLATFORM_ID);
   private translocoService = inject(TranslocoService);
   private stateManager = inject(StateManagerService);
+  private analyticsService = inject(AnalyticsService);
 
   authService = inject(AuthService);
 
@@ -70,6 +72,7 @@ export class Configuracion {
     }
 
     try {
+      this.analyticsService.logLogout();
       await this.authService.logout();
     } catch (error) {
       console.error('Error al cerrar sesión:', error);

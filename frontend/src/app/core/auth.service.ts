@@ -23,7 +23,7 @@ const firebaseConfig = {
   storageBucket: 'educactiva-a3a00.firebasestorage.app',
   messagingSenderId: '712323141237',
   appId: '1:712323141237:web:444d7407f84066ebd8b23c',
-  measurementId: 'G-1MS0B9Z6V5',
+  measurementId: 'G-P1R8ELBW8Q',
 };
 
 const app = initializeApp(firebaseConfig);

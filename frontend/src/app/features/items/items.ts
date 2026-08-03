@@ -9,6 +9,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { TranslocoModule } from '@jsverse/transloco';
 import { StateManagerService } from '../../core/state-manager.service';
+import { AnalyticsService } from '../../core/analytics.service';
 
 type SortField = 'name' | 'age';
 
@@ -21,6 +22,7 @@ type SortField = 'name' | 'age';
 })
 export class Items implements OnInit {
   private readonly stateManager = inject(StateManagerService);
+  private readonly analytics = inject(AnalyticsService);
 
   readonly items = this.stateManager.items;
   readonly loading = this.stateManager.loading;
@@ -62,6 +64,11 @@ export class Items implements OnInit {
 
   updateSearchText(value: string): void {
     this.searchText.set(value);
+
+    const searchTerm = value.trim();
+    if (searchTerm) {
+      this.analytics.logSearch(searchTerm);
+    }
   }
 
   sortByName(): void {
@@ -79,10 +86,11 @@ export class Items implements OnInit {
   private changeSorting(field: SortField): void {
     if (this.sortField() === field) {
       this.sortAscending.update((ascending) => !ascending);
-      return;
+    } else {
+      this.sortField.set(field);
+      this.sortAscending.set(true);
     }
 
-    this.sortField.set(field);
-    this.sortAscending.set(true);
+    this.analytics.logSorting(field, this.sortAscending());
   }
 }
