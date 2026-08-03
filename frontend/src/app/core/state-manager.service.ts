@@ -1,7 +1,8 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal, effect } from '@angular/core';
 import { Api } from './api';
 import { Item } from './item.model';
 import { LocalStorageService } from './local-storage.service';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -9,6 +10,7 @@ import { LocalStorageService } from './local-storage.service';
 export class StateManagerService {
   private readonly api = inject(Api);
   private readonly localStorageService = inject(LocalStorageService);
+  private readonly authService = inject(AuthService);
   private readonly storageKey = 'items';
   private readonly userStorageKey = 'user_profile';
 
@@ -17,10 +19,10 @@ export class StateManagerService {
   private readonly errorState = signal(false);
 
   private readonly userState = signal({
-    name: 'Ignacio Echave',
-    email: 'ignacio@email.com',
-    role: 'Administrador',
-    image: 'https://randomuser.me/api/portraits/men/32.jpg',
+    name: '',
+    email: '',
+    role: 'Usuario',
+    image: '',
     fechaNacimiento: '',
     direccion: '',
     telefonos: [''],
@@ -34,6 +36,18 @@ export class StateManagerService {
 
   constructor() {
     this.loadUser();
+
+    effect(() => {
+      const authUser = this.authService.user();
+      if (authUser) {
+        this.userState.update(current => ({
+          ...current,
+          name: authUser.displayName || current.name,
+          email: authUser.email || current.email,
+          image: authUser.photoURL || current.image
+        }));
+      }
+    });
   }
 
   private loadUser(): void {

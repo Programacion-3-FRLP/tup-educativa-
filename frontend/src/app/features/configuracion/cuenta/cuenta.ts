@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, effect } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -6,6 +6,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { StateManagerService } from '../../../core/state-manager.service';
 
 @Component({
   selector: 'app-cuenta',
@@ -17,15 +18,26 @@ import { Router } from '@angular/router';
 export class Cuenta implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private stateManager = inject(StateManagerService);
 
   cuentaForm!: FormGroup;
 
-  user = {
-    name: 'Ignacio Echave',
-    email: 'ignacio@email.com',
-    role: 'Administrador',
-    image: 'https://randomuser.me/api/portraits/men/32.jpg',
-  };
+  get user() {
+    return this.stateManager.user();
+  }
+
+  constructor() {
+    effect(() => {
+      const currentUser = this.user;
+      if (this.cuentaForm) {
+        this.cuentaForm.patchValue({
+          name: currentUser.name,
+          email: currentUser.email,
+          role: currentUser.role
+        });
+      }
+    });
+  }
 
   ngOnInit() {
     this.cuentaForm = this.fb.group({
@@ -33,9 +45,9 @@ export class Cuenta implements OnInit {
       email: [{ value: this.user.email, disabled: true }],
       role: [{ value: this.user.role, disabled: true }],
 
-      fechaNacimiento: [''],
-      direccion: [''],
-      telefonos: this.fb.array([this.fb.control('')]),
+      fechaNacimiento: [this.user.fechaNacimiento || ''],
+      direccion: [this.user.direccion || ''],
+      telefonos: this.fb.array(this.user.telefonos?.length ? this.user.telefonos.map(t => this.fb.control(t)) : [this.fb.control('')]),
     });
   }
 
@@ -54,6 +66,7 @@ export class Cuenta implements OnInit {
   }
 
   guardar() {
+    this.stateManager.updateUser(this.cuentaForm.getRawValue());
     console.log('Datos guardados con éxito:', this.cuentaForm.getRawValue());
     this.router.navigate(['/configuracion']);
   }
