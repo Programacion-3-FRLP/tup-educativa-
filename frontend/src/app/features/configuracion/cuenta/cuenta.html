@@ -7,22 +7,23 @@
         [src]="user.image"
         alt="Foto de perfil"
         width="100"
+        height="100"
         class="profile-img"
       />
 
       <div class="input-group">
-        <label>Nombre</label>
-        <input type="text" formControlName="name" />
+        <label for="name">Nombre</label>
+        <input id="name" type="text" formControlName="name" />
       </div>
 
       <div class="input-group">
-        <label>Email</label>
-        <input type="email" formControlName="email" />
+        <label for="email">Email</label>
+        <input id="email" type="email" formControlName="email" />
       </div>
 
       <div class="input-group">
-        <label>Rol</label>
-        <input type="text" formControlName="role" />
+        <label for="role">Rol</label>
+        <input id="role" type="text" formControlName="role" />
       </div>
     </div>
 
@@ -30,44 +31,95 @@
 
     <div class="editable-section">
       <div class="input-group">
-        <label for="fechaNacimiento">Fecha de Nacimiento</label>
+        <label for="fechaNacimiento"> Fecha de Nacimiento </label>
+
         <input
           id="fechaNacimiento"
           type="date"
           formControlName="fechaNacimiento"
+          [max]="fechaMaxima"
         />
+
+        @if ( cuentaForm.get('fechaNacimiento')?.touched && cuentaForm
+        .get('fechaNacimiento') ?.hasError('fechaFutura') ) {
+        <small class="error-message">
+          La fecha de nacimiento no puede ser posterior al día de hoy.
+        </small>
+        }
       </div>
 
       <div class="input-group">
         <label for="direccion">Dirección</label>
+
         <input
           id="direccion"
           type="text"
           formControlName="direccion"
           placeholder="Calle, Número, Localidad"
+          autocomplete="street-address"
+          [attr.maxlength]="maxDireccion"
         />
+
+        <div class="field-information">
+          <small>
+            {{ cuentaForm.get('direccion')?.value?.length || 0 }}/{{
+            maxDireccion }}
+          </small>
+        </div>
+
+        @if ( cuentaForm.get('direccion')?.touched &&
+        cuentaForm.get('direccion')?.hasError('maxlength') ) {
+        <small class="error-message">
+          La dirección no puede superar los {{ maxDireccion }} caracteres.
+        </small>
+        }
       </div>
 
       <div class="telefonos-section">
         <label>Teléfonos</label>
 
         <div formArrayName="telefonos">
-          @for (tel of telefonos.controls; track $index) {
-          <div class="telefono-row">
-            <input
-              [formControlName]="$index"
-              type="tel"
-              placeholder="Número de teléfono"
-            />
+          @for ( telefono of telefonos.controls; track $index ) {
+          <div class="telefono-field">
+            <div class="telefono-row">
+              <input
+                [id]="'telefono-' + $index"
+                [formControlName]="$index"
+                type="tel"
+                inputmode="numeric"
+                autocomplete="tel"
+                pattern="[0-9]*"
+                [attr.maxlength]="maxTelefono"
+                placeholder="Número de teléfono"
+                (input)="soloNumeros($event, $index)"
+              />
 
-            @if (telefonos.length > 1) {
-            <button
-              type="button"
-              class="remove-btn"
-              (click)="removerTelefono($index)"
-            >
-              ✕
-            </button>
+              @if (telefonos.length > 1) {
+              <button
+                type="button"
+                class="remove-btn"
+                aria-label="Eliminar teléfono"
+                (click)="removerTelefono($index)"
+              >
+                ✕
+              </button>
+              }
+            </div>
+
+            <div class="field-information">
+              <small>
+                {{ telefono.value?.length || 0 }}/{{ maxTelefono }}
+              </small>
+            </div>
+
+            @if ( telefono.touched && telefono.hasError('pattern') ) {
+            <small class="error-message">
+              El teléfono solamente puede contener números.
+            </small>
+            } @if ( telefono.touched && telefono.hasError('maxlength') ) {
+            <small class="error-message">
+              El teléfono no puede superar los {{ maxTelefono }} números.
+            </small>
             }
           </div>
           }
@@ -83,7 +135,10 @@
       <button type="button" class="cancel-btn" (click)="cancelar()">
         Cancelar
       </button>
-      <button type="submit" class="save-btn">Guardar</button>
+
+      <button type="submit" class="save-btn" [disabled]="cuentaForm.invalid">
+        Guardar
+      </button>
     </div>
   </form>
 </div>
