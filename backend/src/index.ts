@@ -98,7 +98,7 @@ app.put('/items/:id', async (req: Request, res: Response) => {
         const newItem = { ...req.body };
         if (!newItem.login) newItem.login = {};
         newItem.login.uuid = id;
-        
+
         const docRef = itemsCol.doc(id);
         const docSnap = await docRef.get();
         if (!docSnap.exists) {
@@ -123,7 +123,7 @@ app.patch('/items/:id', async (req: Request, res: Response) => {
         const updatedItem = { ...docSnap.data(), ...req.body };
         if (!updatedItem.login) updatedItem.login = {};
         updatedItem.login.uuid = id;
-        
+
         await docRef.set(updatedItem);
         res.json(updatedItem);
     } catch (error) {
