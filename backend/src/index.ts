@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import * as admin from 'firebase-admin';
+import { authenticate, isAdmin } from './middlewares/auth';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -51,6 +52,15 @@ async function initDB() {
 }
 initDB();
 
+app.post('/set-admin', authenticate, async (req: Request, res: Response) => {
+    try {
+        await admin.auth().setCustomUserClaims(req.user!.uid, { role: 'admin' });
+        res.json({ message: 'Rol de administrador asignado correctamente. Cierra sesión y vuelve a entrar para actualizar tu token.' });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al asignar rol de administrador' });
+    }
+});
+
 // 1. GET: obtener todos los items
 app.get('/items', async (req: Request, res: Response) => {
     try {
@@ -77,7 +87,7 @@ app.get('/items/:id', async (req: Request, res: Response) => {
 });
 
 // 3. POST: agregar un elemento a la lista
-app.post('/items', async (req: Request, res: Response) => {
+app.post('/items', authenticate, isAdmin, async (req: Request, res: Response) => {
     try {
         const newItem = req.body;
         if (!newItem.login) newItem.login = {};
@@ -92,7 +102,7 @@ app.post('/items', async (req: Request, res: Response) => {
 });
 
 // 4. PUT: reemplazar completamente un elemento
-app.put('/items/:id', async (req: Request, res: Response) => {
+app.put('/items/:id', authenticate, isAdmin, async (req: Request, res: Response) => {
     try {
         const id = req.params.id;
         const newItem = { ...req.body };
@@ -112,7 +122,7 @@ app.put('/items/:id', async (req: Request, res: Response) => {
 });
 
 // 5. PATCH: editar solo una propiedad de un elemento
-app.patch('/items/:id', async (req: Request, res: Response) => {
+app.patch('/items/:id', authenticate, isAdmin, async (req: Request, res: Response) => {
     try {
         const id = req.params.id;
         const docRef = itemsCol.doc(id);
@@ -132,7 +142,7 @@ app.patch('/items/:id', async (req: Request, res: Response) => {
 });
 
 // 6. DELETE: eliminar un elemento
-app.delete('/items/:id', async (req: Request, res: Response) => {
+app.delete('/items/:id', authenticate, isAdmin, async (req: Request, res: Response) => {
     try {
         const id = req.params.id;
         const docRef = itemsCol.doc(id);

@@ -28,13 +28,13 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
-export const isProfessor = (req: Request, res: Response, next: NextFunction) => {
+export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
   if (!req.user) {
     return res.status(401).json({ error: 'No autorizado. Usuario no autenticado.' });
   }
 
-  if (req.user.role !== 'professor') {
-    return res.status(403).json({ error: 'Prohibido. Se requiere rol de profesor.' });
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Prohibido. Se requiere rol de administrador.' });
   }
 
   next();
