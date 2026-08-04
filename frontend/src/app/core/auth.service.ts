@@ -71,6 +71,12 @@ export class AuthService {
     return !!this.user();
   }
 
+  async getToken(): Promise<string | null> {
+    const currentUser = auth.currentUser;
+    if (!currentUser) return null;
+    return currentUser.getIdToken();
+  }
+
   private mapFirebaseUser(user: User | null): AuthUser | null {
     if (!user) {
       return null;
