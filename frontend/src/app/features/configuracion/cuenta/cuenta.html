@@ -79,7 +79,7 @@
         <label>Teléfonos</label>
 
         <div formArrayName="telefonos">
-          @for ( telefono of telefonos.controls; track $index ) {
+          @for ( telefono of telefonos.controls; track telefono ) {
           <div class="telefono-field">
             <div class="telefono-row">
               <input

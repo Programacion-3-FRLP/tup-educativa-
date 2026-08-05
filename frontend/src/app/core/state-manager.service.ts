@@ -12,8 +12,6 @@ export class StateManagerService {
   private readonly localStorageService = inject(LocalStorageService);
   private readonly authService = inject(AuthService);
   private readonly storageKey = 'items';
-  private readonly userStorageKey = 'user_profile';
-
   private readonly itemsState = signal<Item[]>([]);
   private readonly loadingState = signal(false);
   private readonly errorState = signal(false);
@@ -35,26 +33,42 @@ export class StateManagerService {
   readonly user = this.userState.asReadonly();
 
   constructor() {
-    this.loadUser();
-
     effect(() => {
       const authUser = this.authService.user();
       if (authUser) {
-        this.userState.update(current => ({
-          ...current,
-          name: authUser.displayName || current.name,
-          email: authUser.email || current.email,
-          image: authUser.photoURL || current.image
-        }));
-      }
-    });
-  }
+        const uidKey = `user_profile_${authUser.uid}`;
+        const cachedUser = this.localStorageService.get<any>(uidKey);
 
-  private loadUser(): void {
-    const cachedUser = this.localStorageService.get<any>(this.userStorageKey);
-    if (cachedUser) {
-      this.userState.set(cachedUser);
-    }
+        if (cachedUser) {
+          this.userState.set({
+            ...cachedUser,
+            name: authUser.displayName || cachedUser.name || '',
+            email: authUser.email || cachedUser.email || '',
+            image: authUser.photoURL || cachedUser.image || ''
+          });
+        } else {
+          this.userState.set({
+            name: authUser.displayName || '',
+            email: authUser.email || '',
+            role: 'Usuario',
+            image: authUser.photoURL || '',
+            fechaNacimiento: '',
+            direccion: '',
+            telefonos: [''],
+          });
+        }
+      } else {
+        this.userState.set({
+          name: '',
+          email: '',
+          role: 'Usuario',
+          image: '',
+          fechaNacimiento: '',
+          direccion: '',
+          telefonos: [''],
+        });
+      }
+    }, { allowSignalWrites: true });
   }
 
   updateUser(updatedData: any): void {
@@ -62,7 +76,12 @@ export class StateManagerService {
     const newUserState = { ...currentUser, ...updatedData };
 
     this.userState.set(newUserState);
-    this.localStorageService.save(this.userStorageKey, newUserState, 86400000);
+    
+    const authUser = this.authService.user();
+    if (authUser) {
+      const uidKey = `user_profile_${authUser.uid}`;
+      this.localStorageService.save(uidKey, newUserState, 86400000);
+    }
   }
 
   loadItems(): void {
