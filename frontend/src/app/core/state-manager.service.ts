@@ -44,13 +44,14 @@ export class StateManagerService {
             ...cachedUser,
             name: authUser.displayName || cachedUser.name || '',
             email: authUser.email || cachedUser.email || '',
-            image: authUser.photoURL || cachedUser.image || ''
+            image: authUser.photoURL || cachedUser.image || '',
+            role: authUser.role || cachedUser.role || 'Usuario'
           });
         } else {
           this.userState.set({
             name: authUser.displayName || '',
             email: authUser.email || '',
-            role: 'Usuario',
+            role: authUser.role || 'Usuario',
             image: authUser.photoURL || '',
             fechaNacimiento: '',
             direccion: '',
