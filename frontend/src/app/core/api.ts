@@ -8,7 +8,7 @@ import { ItemsApiResponse } from './item.model';
 })
 export class Api {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'https://randomuser.me/api/?results=10';
+  private readonly apiUrl = 'http://localhost:3000/items';
 
   getItems(): Observable<ItemsApiResponse> {
     return this.http.get<ItemsApiResponse>(this.apiUrl);

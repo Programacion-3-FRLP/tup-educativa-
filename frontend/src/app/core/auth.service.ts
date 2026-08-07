@@ -14,16 +14,17 @@ export interface AuthUser {
   email: string | null;
   displayName: string | null;
   photoURL: string | null;
+  role: string;
 }
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyCMYA1dQ6HRTPj_5UeuH02W1dwfCCYzCWo',
-  authDomain: 'educactiva-a3a00.firebaseapp.com',
-  projectId: 'educactiva-a3a00',
-  storageBucket: 'educactiva-a3a00.firebasestorage.app',
-  messagingSenderId: '712323141237',
-  appId: '1:712323141237:web:444d7407f84066ebd8b23c',
-  measurementId: 'G-P1R8ELBW8Q',
+  apiKey: "AIzaSyD4-eJe9vDq8ai0PccQv2_NVjd4z1Tf4PE",
+  authDomain: "tup-educativa.firebaseapp.com",
+  projectId: "tup-educativa",
+  storageBucket: "tup-educativa.firebasestorage.app",
+  messagingSenderId: "444274662932",
+  appId: "1:444274662932:web:fc7bf722ba782379335101",
+  measurementId: "G-RDKS6PJXPD"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -43,8 +44,20 @@ export class AuthService {
     this.authReady = new Promise((resolve) => {
       let initialized = false;
 
-      onAuthStateChanged(auth, (firebaseUser: User | null) => {
-        this.currentUser.set(this.mapFirebaseUser(firebaseUser));
+      onAuthStateChanged(auth, async (firebaseUser: User | null) => {
+        let role = 'Usuario';
+        if (firebaseUser) {
+          try {
+            const tokenResult = await firebaseUser.getIdTokenResult();
+            if (tokenResult.claims['role'] === 'admin') {
+              role = 'Administrador';
+            }
+          } catch (e) {
+            console.error('Error getting token result', e);
+          }
+        }
+
+        this.currentUser.set(this.mapFirebaseUser(firebaseUser, role));
 
         if (!initialized) {
           initialized = true;
@@ -71,7 +84,13 @@ export class AuthService {
     return !!this.user();
   }
 
-  private mapFirebaseUser(user: User | null): AuthUser | null {
+  async getToken(): Promise<string | null> {
+    const currentUser = auth.currentUser;
+    if (!currentUser) return null;
+    return currentUser.getIdToken();
+  }
+
+  private mapFirebaseUser(user: User | null, role: string = 'Usuario'): AuthUser | null {
     if (!user) {
       return null;
     }
@@ -81,6 +100,7 @@ export class AuthService {
       email: user.email,
       displayName: user.displayName,
       photoURL: user.photoURL,
+      role: role
     };
   }
 }
