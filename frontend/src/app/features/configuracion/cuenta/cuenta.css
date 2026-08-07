@@ -1,0 +1,203 @@
+:host {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+.cuenta-container {
+  width: 100%;
+  max-width: 50rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+
+.cuenta-container h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+form {
+  width: 100%;
+  min-width: 0;
+}
+
+.user-card-static {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem 1.5rem;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+}
+
+.profile-img {
+  grid-row: 1 / 4;
+  width: 6.25rem;
+  height: 6.25rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.editable-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.input-group label,
+.telefonos-section > label {
+  font-weight: 600;
+}
+
+input {
+  width: 100%;
+  min-width: 0;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid #b8b8b8;
+  border-radius: 0.3rem;
+  box-sizing: border-box;
+  font: inherit;
+}
+
+input:focus {
+  border-color: #555;
+  outline: 2px solid rgb(0 0 0 / 10%);
+  outline-offset: 1px;
+}
+
+input:disabled {
+  color: #555;
+  background-color: #eeeeee;
+  cursor: not-allowed;
+}
+
+input.ng-invalid.ng-touched {
+  border-color: #b00020;
+}
+
+hr {
+  margin: 1.5rem 0;
+  border: 0;
+  border-top: 1px solid #dddddd;
+}
+
+.telefonos-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  min-width: 0;
+}
+
+.telefono-field {
+  margin-bottom: 0.8rem;
+}
+
+.telefono-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.telefono-row input {
+  flex: 1;
+}
+
+.field-information {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.2rem;
+  color: #666666;
+}
+
+.error-message {
+  display: block;
+  margin-top: 0.25rem;
+  color: #b00020;
+  overflow-wrap: anywhere;
+}
+
+.add-btn,
+.remove-btn,
+.cancel-btn,
+.save-btn {
+  border: 0;
+  border-radius: 0.3rem;
+  padding: 0.65rem 1rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.add-btn {
+  align-self: flex-start;
+  background-color: #e9e9e9;
+}
+
+.remove-btn {
+  flex: 0 0 auto;
+  padding: 0.65rem 0.8rem;
+  color: #ffffff;
+  background-color: #b00020;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.cancel-btn {
+  background-color: #e0e0e0;
+}
+
+.save-btn {
+  color: #ffffff;
+  background-color: #333333;
+}
+
+.save-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.add-btn:hover,
+.cancel-btn:hover {
+  filter: brightness(0.95);
+}
+
+.remove-btn:hover,
+.save-btn:not(:disabled):hover {
+  filter: brightness(1.15);
+}
+
+@media (max-width: 37.5rem) {
+  .cuenta-container {
+    padding: 1rem;
+  }
+
+  .user-card-static {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-img {
+    grid-row: auto;
+    justify-self: center;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+}
