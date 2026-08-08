@@ -8,7 +8,7 @@ import { ItemsApiResponse } from './item.model';
 })
 export class Api {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:3000/items';
+  private readonly apiUrl = 'https://tup-educativa.onrender.com';
 
   getItems(): Observable<ItemsApiResponse> {
     return this.http.get<ItemsApiResponse>(this.apiUrl);
